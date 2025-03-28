@@ -8,716 +8,218 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const ethers_1 = require("ethers");
-// Standard ERC20 and AMM interfaces
-const ERC20_ABI = [
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "_name",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "_symbol",
-                "type": "string"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_initialSupply",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "allowance",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "needed",
-                "type": "uint256"
-            }
-        ],
-        "name": "ERC20InsufficientAllowance",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "balance",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "needed",
-                "type": "uint256"
-            }
-        ],
-        "name": "ERC20InsufficientBalance",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "approver",
-                "type": "address"
-            }
-        ],
-        "name": "ERC20InvalidApprover",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "receiver",
-                "type": "address"
-            }
-        ],
-        "name": "ERC20InvalidReceiver",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
-            }
-        ],
-        "name": "ERC20InvalidSender",
-        "type": "error"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            }
-        ],
-        "name": "ERC20InvalidSpender",
-        "type": "error"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Approval",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Transfer",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            }
-        ],
-        "name": "allowance",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "approve",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "decimals",
-        "outputs": [
-            {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "mint",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "name",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "symbol",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "transfer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    }
-];
-const AMM_ABI = [
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "provider",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amountA",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amountB",
-                "type": "uint256"
-            }
-        ],
-        "name": "LiquidityAdded",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "tokenIn",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amountIn",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "tokenOut",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amountOut",
-                "type": "uint256"
-            }
-        ],
-        "name": "Swapped",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_tokenA",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_amountA",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_tokenB",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_amountB",
-                "type": "uint256"
-            }
-        ],
-        "name": "addLiquidity",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "tokenIn",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amountIn",
-                "type": "uint256"
-            }
-        ],
-        "name": "getAmountOut",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getReserves",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "_tokenA",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_reserveA",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "_tokenB",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_reserveB",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_tokenA",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "_tokenB",
-                "type": "address"
-            }
-        ],
-        "name": "initialize",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "initialized",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "reserveA",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "reserveB",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "tokenIn",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amountIn",
-                "type": "uint256"
-            }
-        ],
-        "name": "swap",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "tokenA",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "tokenB",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    }
-];
+const contractData_js_1 = require("./contractData.js");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+if (!PRIVATE_KEY) {
+    throw new Error('no private key in .env file');
+}
+const provider = new ethers_1.ethers.providers.JsonRpcProvider('https://hashkeychain-testnet.alt.technology');
+const wallet = new ethers_1.ethers.Wallet(PRIVATE_KEY, provider);
+// 최소 수익성 있는 가격 차이 (basis points, 1bp = 0.01%)
+const MIN_PROFITABLE_DIFF_BPS = 50; // 0.5%
+// 가스 비용 및 슬리피지를 고려한 최소 거래 금액
+const MIN_TRADE_AMOUNT = ethers_1.ethers.utils.parseUnits('10', 18); // 예: 10 USDT
+// 아비트라지 실행 중인지 확인하는 플래그
+let isExecutingArbitrage = false;
 function detectArbitrageOpportunities() {
     return __awaiter(this, void 0, void 0, function* () {
-        // Connect to the blockchain (read-only is sufficient for monitoring)
-        const provider = new ethers_1.ethers.providers.JsonRpcProvider('https://hashkeychain-testnet.alt.technology');
-        const privatekey = "";
-        // Contract addresses
-        const ammA = '0xE6bD1F20389b8f9e3aa45F5bF5A3055eE3C90329';
-        const ammB = '0xB8f1e8033628C1646BE2b2502e7D01f9115A0964';
-        const usdt = '0x880eE68a9b6E51601c07196dff5BE1bf3764E8Ac';
-        const whsk = '0xc6FA3F7710662Be44Fc10c6beeB4fF1575aADaB6';
-        // Initialize contract instances (read-only)
-        const ammAContract = new ethers_1.ethers.Contract(ammA, AMM_ABI, provider);
-        const ammBContract = new ethers_1.ethers.Contract(ammB, AMM_ABI, provider);
-        const usdtContract = new ethers_1.ethers.Contract(usdt, ERC20_ABI, provider);
-        const whskContract = new ethers_1.ethers.Contract(whsk, ERC20_ABI, provider);
+        if (isExecutingArbitrage) {
+            console.log('이미 아비트라지 거래가 진행 중입니다.');
+            return { hasOpportunity: false, isExecuting: true };
+        }
+        // 컨트랙트 인스턴스 초기화
+        const ammAContract = new ethers_1.ethers.Contract(contractData_js_1.ammA, contractData_js_1.AMM_ABI, provider);
+        const ammBContract = new ethers_1.ethers.Contract(contractData_js_1.ammB, contractData_js_1.AMM_ABI, provider);
+        const usdtContract = new ethers_1.ethers.Contract(contractData_js_1.usdt, contractData_js_1.ERC20_ABI, provider);
+        const whskContract = new ethers_1.ethers.Contract(contractData_js_1.whsk, contractData_js_1.ERC20_ABI, provider);
         try {
-            // Get token symbols for better logging
-            const usdtSymbol = yield usdtContract.symbol();
-            const whskSymbol = yield whskContract.symbol();
-            // Get token addresses in each AMM
-            const ammAToken0 = yield ammAContract.tokenA();
-            const ammAToken1 = yield ammAContract.tokenB();
-            const ammBToken0 = yield ammBContract.tokenA();
-            const ammBToken1 = yield ammBContract.tokenB();
-            console.log(`AMM A contains: ${ammAToken0} and ${ammAToken1}`);
-            console.log(`AMM B contains: ${ammBToken0} and ${ammBToken1}`);
-            // Get USDT decimals for proper formatting
+            // USDT 소수점 가져오기
             const usdtDecimals = yield usdtContract.decimals();
-            console.log(`${usdtSymbol} decimals: ${usdtDecimals}`);
-            // Get reserves from AMM A
+            const whskDecimals = yield whskContract.decimals();
+            // AMM A에서 리저브 가져오기
             const reservesA = yield ammAContract.getReserves();
-            console.log(`AMM A Reserves: 
-        - ${reservesA._tokenA}: ${ethers_1.ethers.utils.formatUnits(reservesA._reserveA, 18)}
-        - ${reservesA._tokenB}: ${ethers_1.ethers.utils.formatUnits(reservesA._reserveB, usdtDecimals)}
-      `);
-            // Determine which reserve is USDT in AMM A
-            const isUsdtTokenAInAmmA = reservesA._tokenA.toLowerCase() === usdt.toLowerCase();
+            // AMM A에서 USDT가 어떤 토큰인지 결정
+            const isUsdtTokenAInAmmA = reservesA._tokenA.toLowerCase() === contractData_js_1.usdt.toLowerCase();
             const usdtReserveA = isUsdtTokenAInAmmA ? reservesA._reserveA : reservesA._reserveB;
-            const otherTokenA = isUsdtTokenAInAmmA ? reservesA._tokenB : reservesA._tokenA;
             const otherReserveA = isUsdtTokenAInAmmA ? reservesA._reserveB : reservesA._reserveA;
-            // Get reserves from AMM B
+            // AMM B에서 리저브 가져오기
             const reservesB = yield ammBContract.getReserves();
-            console.log(`AMM B Reserves: 
-        - ${reservesB._tokenA}: ${ethers_1.ethers.utils.formatUnits(reservesB._reserveA, 18)}
-        - ${reservesB._tokenB}: ${ethers_1.ethers.utils.formatUnits(reservesB._reserveB, usdtDecimals)}
-      `);
-            // Determine which reserve is USDT in AMM B
-            const isUsdtTokenAInAmmB = reservesB._tokenA.toLowerCase() === usdt.toLowerCase();
+            // AMM B에서 USDT가 어떤 토큰인지 결정
+            const isUsdtTokenAInAmmB = reservesB._tokenA.toLowerCase() === contractData_js_1.usdt.toLowerCase();
             const usdtReserveB = isUsdtTokenAInAmmB ? reservesB._reserveA : reservesB._reserveB;
             const whskReserveB = isUsdtTokenAInAmmB ? reservesB._reserveB : reservesB._reserveA;
-            // Calculate prices (as the ratio of reserves)
-            // Price of USDT in terms of the other token in AMM A
+            // 가격 계산 (리저브 비율)
             const priceUsdtInAmmA = otherReserveA.mul(ethers_1.ethers.BigNumber.from(10).pow(usdtDecimals)).div(usdtReserveA);
-            // Price of USDT in terms of WHSK in AMM B
             const priceUsdtInAmmB = whskReserveB.mul(ethers_1.ethers.BigNumber.from(10).pow(usdtDecimals)).div(usdtReserveB);
-            console.log(`${usdtSymbol} price in AMM A: ${ethers_1.ethers.utils.formatUnits(priceUsdtInAmmA, 18)} ${otherTokenA === whsk ? whskSymbol : 'Other Token'}`);
-            console.log(`${usdtSymbol} price in AMM B: ${ethers_1.ethers.utils.formatUnits(priceUsdtInAmmB, 18)} ${whskSymbol}`);
-            // Calculate price difference percentage
+            // BigNumber를 사람이 읽을 수 있는 형태로 변환
+            const formattedPriceInAmmA = ethers_1.ethers.utils.formatUnits(priceUsdtInAmmA, whskDecimals);
+            const formattedPriceInAmmB = ethers_1.ethers.utils.formatUnits(priceUsdtInAmmB, whskDecimals);
+            // 항상 현재 가격 표시
+            console.log(`\n--- Current Prices (${new Date().toLocaleTimeString()}) ---`);
+            console.log(`USDT/WHSK price in AMM A: ${formattedPriceInAmmA}`);
+            console.log(`USDT/WHSK price in AMM B: ${formattedPriceInAmmB}`);
+            // 가격 차이 백분율 계산
             const priceDiffBps = priceUsdtInAmmA.gt(priceUsdtInAmmB)
                 ? priceUsdtInAmmA.sub(priceUsdtInAmmB).mul(10000).div(priceUsdtInAmmB)
                 : priceUsdtInAmmB.sub(priceUsdtInAmmA).mul(10000).div(priceUsdtInAmmA);
-            console.log(`Price difference: ${priceDiffBps.toNumber() / 100}%`);
-            // Check if arbitrage is possible (considering gas costs)
-            const minProfitableDiffBps = 50; // 0.5% minimum difference to be profitable
-            if (priceDiffBps.gt(minProfitableDiffBps)) {
-                console.log('⚠️ ARBITRAGE OPPORTUNITY DETECTED ⚠️');
-                // Determine direction of arbitrage
-                if (priceUsdtInAmmA.gt(priceUsdtInAmmB)) {
-                    console.log(`Buy ${usdtSymbol} from AMM B, sell to AMM A for profit`);
-                    // Calculate potential profit for a sample trade
-                    const sampleTradeAmount = ethers_1.ethers.utils.parseUnits('1000', usdtDecimals); // Example: 1000 USDT
-                    const amountOutB = sampleTradeAmount.mul(priceUsdtInAmmB).div(ethers_1.ethers.BigNumber.from(10).pow(usdtDecimals));
-                    const amountOutA = amountOutB.mul(priceUsdtInAmmA).div(ethers_1.ethers.BigNumber.from(10).pow(18));
-                    const profit = amountOutA.sub(sampleTradeAmount);
-                    console.log(`Estimated profit for 1000 ${usdtSymbol}: ${ethers_1.ethers.utils.formatUnits(profit, usdtDecimals)} ${usdtSymbol} (${profit.mul(100).div(sampleTradeAmount)}%)`);
+            // 가격 차이 백분율 표시
+            const priceDiffPercent = priceDiffBps.toNumber() / 100;
+            console.log(`Price difference: ${priceDiffPercent.toFixed(2)}%`);
+            // 아비트라지 가능성 확인 (가스 비용 고려)
+            if (priceDiffBps.gt(MIN_PROFITABLE_DIFF_BPS)) {
+                console.log('\n🚨 ARBITRAGE OPPORTUNITY DETECTED 🚨');
+                // 아비트라지 방향 결정
+                const isAmmAHigher = priceUsdtInAmmA.gt(priceUsdtInAmmB);
+                if (isAmmAHigher) {
+                    console.log(`Direction: Buy USDT from AMM B, sell to AMM A`);
                 }
                 else {
-                    console.log(`Buy ${usdtSymbol} from AMM A, sell to AMM B for profit`);
-                    // Calculate potential profit for a sample trade
-                    const sampleTradeAmount = ethers_1.ethers.utils.parseUnits('1000', usdtDecimals); // Example: 1000 USDT
-                    const amountOutA = sampleTradeAmount.mul(priceUsdtInAmmA).div(ethers_1.ethers.BigNumber.from(10).pow(usdtDecimals));
-                    const amountOutB = amountOutA.mul(priceUsdtInAmmB).div(ethers_1.ethers.BigNumber.from(10).pow(18));
-                    const profit = amountOutB.sub(sampleTradeAmount);
-                    console.log(`Estimated profit for 1000 ${usdtSymbol}: ${ethers_1.ethers.utils.formatUnits(profit, usdtDecimals)} ${usdtSymbol} (${profit.mul(100).div(sampleTradeAmount)}%)`);
+                    console.log(`Direction: Buy USDT from AMM A, sell to AMM B`);
                 }
+                // 아비트라지 실행
+                executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract, whskContract, isUsdtTokenAInAmmA, isUsdtTokenAInAmmB);
+                return {
+                    hasOpportunity: true,
+                    priceDiffPercent,
+                    priceAmmA: formattedPriceInAmmA,
+                    priceAmmB: formattedPriceInAmmB,
+                    direction: isAmmAHigher ? 'B->A' : 'A->B'
+                };
             }
-            else {
-                console.log('No profitable arbitrage opportunity at the moment');
-            }
+            return {
+                hasOpportunity: false,
+                priceAmmA: formattedPriceInAmmA,
+                priceAmmB: formattedPriceInAmmB,
+                priceDiffPercent
+            };
         }
         catch (error) {
-            console.error('Error detecting arbitrage opportunities:', error);
+            console.error('Error:', error);
+            return { hasOpportunity: false, error };
         }
     });
 }
-// Set up a recurring check
+function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract, whskContract, isUsdtTokenAInAmmA, isUsdtTokenAInAmmB) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            isExecutingArbitrage = true;
+            console.log('\n--- EXECUTING ARBITRAGE ---');
+            // 서명자로 컨트랙트 연결
+            const ammAWithSigner = ammAContract.connect(wallet);
+            const ammBWithSigner = ammBContract.connect(wallet);
+            const usdtWithSigner = usdtContract.connect(wallet);
+            const whskWithSigner = whskContract.connect(wallet);
+            // 현재 잔액 확인
+            const usdtBalance = yield usdtContract.balanceOf(wallet.address);
+            const whskBalance = yield whskContract.balanceOf(wallet.address);
+            console.log(`Current balances - USDT: ${ethers_1.ethers.utils.formatUnits(usdtBalance, yield usdtContract.decimals())}, WHSK: ${ethers_1.ethers.utils.formatUnits(whskBalance, yield whskContract.decimals())}`);
+            // 거래 금액 결정 (실제 구현에서는 최적의 금액을 계산해야 함)
+            // 여기서는 간단히 MIN_TRADE_AMOUNT 또는 보유 잔액 중 작은 값을 사용
+            let tradeAmount;
+            let tokenToUse;
+            if (isAmmAHigher) {
+                // AMM B에서 USDT 구매 후 AMM A에 판매
+                // WHSK로 시작하는 것이 좋음
+                tradeAmount = whskBalance.gt(MIN_TRADE_AMOUNT) ? MIN_TRADE_AMOUNT : whskBalance;
+                tokenToUse = contractData_js_1.whsk;
+                if (tradeAmount.isZero()) {
+                    console.log('WHSK 잔액이 부족합니다.');
+                    isExecutingArbitrage = false;
+                    return;
+                }
+                // 1. AMM B에 WHSK 승인
+                console.log('Approving WHSK for AMM B...');
+                const approvalTx1 = yield whskWithSigner.approve(contractData_js_1.ammB, tradeAmount);
+                yield approvalTx1.wait();
+                console.log(`Approval transaction: ${approvalTx1.hash}`);
+                // 2. AMM B에서 WHSK를 USDT로 스왑
+                console.log('Swapping WHSK to USDT in AMM B...');
+                const swapTx1 = yield ammBWithSigner.swap(contractData_js_1.whsk, tradeAmount);
+                yield swapTx1.wait();
+                console.log(`Swap transaction: ${swapTx1.hash}`);
+                // 3. 받은 USDT 확인
+                const newUsdtBalance = yield usdtContract.balanceOf(wallet.address);
+                const usdtReceived = newUsdtBalance.sub(usdtBalance);
+                console.log(`Received ${ethers_1.ethers.utils.formatUnits(usdtReceived, yield usdtContract.decimals())} USDT`);
+                // 4. AMM A에 USDT 승인
+                console.log('Approving USDT for AMM A...');
+                const approvalTx2 = yield usdtWithSigner.approve(contractData_js_1.ammA, usdtReceived);
+                yield approvalTx2.wait();
+                console.log(`Approval transaction: ${approvalTx2.hash}`);
+                // 5. AMM A에서 USDT를 WHSK로 스왑
+                console.log('Swapping USDT to WHSK in AMM A...');
+                const swapTx2 = yield ammAWithSigner.swap(contractData_js_1.usdt, usdtReceived);
+                yield swapTx2.wait();
+                console.log(`Swap transaction: ${swapTx2.hash}`);
+            }
+            else {
+                // AMM A에서 USDT 구매 후 AMM B에 판매
+                // WHSK로 시작하는 것이 좋음
+                tradeAmount = whskBalance.gt(MIN_TRADE_AMOUNT) ? MIN_TRADE_AMOUNT : whskBalance;
+                tokenToUse = contractData_js_1.whsk;
+                if (tradeAmount.isZero()) {
+                    console.log('WHSK 잔액이 부족합니다.');
+                    isExecutingArbitrage = false;
+                    return;
+                }
+                // 1. AMM A에 WHSK 승인
+                console.log('Approving WHSK for AMM A...');
+                const approvalTx1 = yield whskWithSigner.approve(contractData_js_1.ammA, tradeAmount);
+                yield approvalTx1.wait();
+                console.log(`Approval transaction: ${approvalTx1.hash}`);
+                // 2. AMM A에서 WHSK를 USDT로 스왑
+                console.log('Swapping WHSK to USDT in AMM A...');
+                const swapTx1 = yield ammAWithSigner.swap(contractData_js_1.whsk, tradeAmount);
+                yield swapTx1.wait();
+                console.log(`Swap transaction: ${swapTx1.hash}`);
+                // 3. 받은 USDT 확인
+                const newUsdtBalance = yield usdtContract.balanceOf(wallet.address);
+                const usdtReceived = newUsdtBalance.sub(usdtBalance);
+                console.log(`Received ${ethers_1.ethers.utils.formatUnits(usdtReceived, yield usdtContract.decimals())} USDT`);
+                // 4. AMM B에 USDT 승인
+                console.log('Approving USDT for AMM B...');
+                const approvalTx2 = yield usdtWithSigner.approve(contractData_js_1.ammB, usdtReceived);
+                yield approvalTx2.wait();
+                console.log(`Approval transaction: ${approvalTx2.hash}`);
+                // 5. AMM B에서 USDT를 WHSK로 스왑
+                console.log('Swapping USDT to WHSK in AMM B...');
+                const swapTx2 = yield ammBWithSigner.swap(contractData_js_1.usdt, usdtReceived);
+                yield swapTx2.wait();
+                console.log(`Swap transaction: ${swapTx2.hash}`);
+            }
+            // 최종 잔액 확인 및 수익 계산
+            const finalUsdtBalance = yield usdtContract.balanceOf(wallet.address);
+            const finalWhskBalance = yield whskContract.balanceOf(wallet.address);
+            console.log('\n--- ARBITRAGE COMPLETED ---');
+            console.log(`Initial balances - USDT: ${ethers_1.ethers.utils.formatUnits(usdtBalance, yield usdtContract.decimals())}, WHSK: ${ethers_1.ethers.utils.formatUnits(whskBalance, yield whskContract.decimals())}`);
+            console.log(`Final balances - USDT: ${ethers_1.ethers.utils.formatUnits(finalUsdtBalance, yield usdtContract.decimals())}, WHSK: ${ethers_1.ethers.utils.formatUnits(finalWhskBalance, yield whskContract.decimals())}`);
+            const whskProfit = finalWhskBalance.sub(whskBalance);
+            console.log(`Profit: ${ethers_1.ethers.utils.formatUnits(whskProfit, yield whskContract.decimals())} WHSK`);
+        }
+        catch (error) {
+            console.error('Arbitrage execution error:', error);
+        }
+        finally {
+            isExecutingArbitrage = false;
+        }
+    });
+}
 function startArbitrageMonitoring() {
     return __awaiter(this, arguments, void 0, function* (intervalMs = 10000) {
-        console.log('Starting arbitrage opportunity monitoring...');
-        console.log('---------------------------------------------');
-        // Initial check
+        // 초기 검사
         yield detectArbitrageOpportunities();
-        // Set up recurring checks
+        // 주기적 검사 설정
         setInterval(() => __awaiter(this, void 0, void 0, function* () {
-            console.log('\n--- Checking for arbitrage opportunities ---');
             yield detectArbitrageOpportunities();
-            console.log('---------------------------------------------');
         }), intervalMs);
     });
 }
-function x() {
-    return __awaiter(this, void 0, void 0, function* () {
-    });
-}
-// Start the monitoring
+// 모니터링 시작
 startArbitrageMonitoring();
