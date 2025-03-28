@@ -3,7 +3,7 @@ import { ArbitrageTransaction } from "../types";
 import styles from "../app/page.module.css";
 
 interface HeaderProps {
-  transactions: ArbitrageTransaction[];
+  transactions: ArbitrageTransaction[][];
 }
 
 export default function Header({ transactions }: HeaderProps) {

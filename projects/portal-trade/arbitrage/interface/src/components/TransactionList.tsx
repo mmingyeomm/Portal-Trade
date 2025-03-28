@@ -1,6 +1,6 @@
 import React from "react";
 import { ArbitrageTransaction } from "../types";
-import TransactionItem from "./TransactionItem";
+import ArbitrageCard from "./ArbitrageCard";
 import styles from "../app/page.module.css";
 
 interface TransactionListProps {
@@ -21,7 +21,7 @@ export default function TransactionList({
 
       <div>
         {transactions.map((transaction) => (
-          <TransactionItem key={transaction.id} transaction={transaction} />
+          <ArbitrageCard key={transaction.id} transaction={transaction} />
         ))}
 
         {transactions.length === 0 && (
