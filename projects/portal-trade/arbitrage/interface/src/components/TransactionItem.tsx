@@ -6,7 +6,7 @@ interface TransactionItemProps {
   transaction: ArbitrageTransaction;
 }
 
-export default function TransactionItem({ transaction }: TransactionItemProps) {
+export default function ArbitrageCard({ transaction }: TransactionItemProps) {
   // Determine color based on profit amount
   const isProfitable = transaction.profit.amount > 0;
   const profitClass = isProfitable ? "positive" : "negative";
