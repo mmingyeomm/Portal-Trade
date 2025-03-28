@@ -1,0 +1,371 @@
+.page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.headerStats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--muted-text);
+}
+
+.statValue {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.main {
+  flex: 1;
+  padding: 2rem 0;
+}
+
+/* Dashboard styles */
+.dashboard {
+  padding: 2rem 0;
+  background-color: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.dashboardCard {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboardCard h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+}
+
+/* Chart styles */
+.barChart {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 150px;
+  margin-top: auto;
+}
+
+.barContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  position: relative;
+}
+
+.bar {
+  width: 20px;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+}
+
+.barPositive {
+  background: linear-gradient(
+    to top,
+    var(--accent-green),
+    rgba(74, 222, 128, 0.5)
+  );
+}
+
+.barNegative {
+  background: linear-gradient(to top, var(--error), rgba(239, 68, 68, 0.5));
+}
+
+.barLabel {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--muted-text);
+}
+
+/* Strategy styles */
+.strategyList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.strategyItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.strategyHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.strategyBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.badgeFill-blue {
+  background-color: var(--accent-blue);
+  color: #111;
+}
+
+.badgeFill-green {
+  background-color: var(--accent-green);
+  color: #111;
+}
+
+.badgeFill-yellow {
+  background-color: var(--accent-yellow);
+  color: #111;
+}
+
+.badgeFill-purple {
+  background-color: var(--accent-purple);
+  color: #111;
+}
+
+.badgeFill-pink {
+  background-color: var(--accent-pink);
+  color: #111;
+}
+
+.strategyProfit {
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.strategyStats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.strategyProgress {
+  flex: 1;
+  height: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: var(--accent-green);
+  border-radius: 2px;
+}
+
+.successRate {
+  font-size: 0.75rem;
+  color: var(--muted-text);
+  white-space: nowrap;
+}
+
+/* Quick Stats styles */
+.statGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.quickStat {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.statCircle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.statIcon {
+  font-size: 1.25rem;
+}
+
+.statInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.statName {
+  font-size: 0.75rem;
+  color: var(--muted-text);
+}
+
+@media (max-width: 1024px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chart {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart {
+    grid-column: span 1;
+  }
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.875rem;
+  color: var(--muted-text);
+  font-weight: 500;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.item:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.dex {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.dexIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.coins {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.coinPair {
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+.strategy {
+  display: flex;
+  align-items: center;
+}
+
+.profit {
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.timestamp {
+  font-size: 0.875rem;
+  color: var(--muted-text);
+}
+
+@media (max-width: 768px) {
+  .headerContent {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .headerStats {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .statItem {
+    align-items: flex-start;
+  }
+
+  .tableHeader {
+    display: none;
+  }
+
+  .item {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  .item > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .item > div::before {
+    content: attr(data-label);
+    font-size: 0.75rem;
+    color: var(--muted-text);
+  }
+}
