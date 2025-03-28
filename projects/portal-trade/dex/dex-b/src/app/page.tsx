@@ -780,7 +780,7 @@ export default function DexPage() {
     <div className="min-h-screen bg-gradient-to-b from-yellow-100 to-white flex items-center justify-center p-4">
       <div className="bg-yellow-50 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-yellow-200">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-yellow-900 mb-4">DEX</h1>
+          <h1 className="text-2xl font-bold text-yellow-900 mb-4">DEX B</h1>
 
           {/* Tab Buttons */}
           <div className="flex gap-2 bg-yellow-100 p-1 rounded-lg mb-6">
@@ -818,7 +818,7 @@ export default function DexPage() {
                 label="To"
                 value={x}
                 onChange={setToAmount}
-                tokenSymbol="HSK"
+                tokenSymbol="WHSK"
               />
 
               <button
@@ -839,10 +839,10 @@ export default function DexPage() {
               />
 
               <TokenInput
-                label="HSK"
+                label="WHSK"
                 value={token2Amount}
                 onChange={setToken2Amount}
-                tokenSymbol="HSK"
+                tokenSymbol="WHSK"
               />
 
               {/* <div className="bg-yellow-100 rounded-xl p-4 mb-6">
@@ -854,7 +854,7 @@ export default function DexPage() {
                     Pool Share: {token1Amount && token2Amount ? "0.001%" : "-"}
                   </p>
                   <p>HSK per USDT: 1.3</p>
-                  <p>USDT per HSK: 0.7</p>
+                  <p>USDT per WHSK: 0.7</p>
                 </div>
               </div> */}
 
