@@ -609,6 +609,7 @@ function detectArbitrageOpportunities() {
     return __awaiter(this, void 0, void 0, function* () {
         // Connect to the blockchain (read-only is sufficient for monitoring)
         const provider = new ethers_1.ethers.providers.JsonRpcProvider('https://hashkeychain-testnet.alt.technology');
+        const privatekey = "";
         // Contract addresses
         const ammA = '0xE6bD1F20389b8f9e3aa45F5bF5A3055eE3C90329';
         const ammB = '0xB8f1e8033628C1646BE2b2502e7D01f9115A0964';
@@ -712,6 +713,10 @@ function startArbitrageMonitoring() {
             yield detectArbitrageOpportunities();
             console.log('---------------------------------------------');
         }), intervalMs);
+    });
+}
+function x() {
+    return __awaiter(this, void 0, void 0, function* () {
     });
 }
 // Start the monitoring
