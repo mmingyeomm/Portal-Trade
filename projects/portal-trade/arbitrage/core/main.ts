@@ -143,10 +143,8 @@ async function executeArbitrage(
         const whskWithSigner = whskContract.connect(wallet);
         
         // 현재 잔액 확인
-        const usdtBalance = await usdtContract.balanceOf(wallet.address);
-        const whskBalance = await whskContract.balanceOf(wallet.address);
-        
-        console.log(`Current balances - USDT: ${ethers.utils.formatUnits(usdtBalance, await usdtContract.decimals())}, WHSK: ${ethers.utils.formatUnits(whskBalance, await whskContract.decimals())}`);
+        const initialUsdtBalance = await usdtContract.balanceOf(wallet.address);
+        const initialWhskBalance = await whskContract.balanceOf(wallet.address);
         
         // 거래 금액 결정 (실제 구현에서는 최적의 금액을 계산해야 함)
         // 여기서는 간단히 MIN_TRADE_AMOUNT 또는 보유 잔액 중 작은 값을 사용
@@ -156,15 +154,16 @@ async function executeArbitrage(
         if (isAmmAHigher) {
             // AMM B에서 USDT 구매 후 AMM A에 판매
             // WHSK로 시작하는 것이 좋음
-            tradeAmount = whskBalance.gt(MIN_TRADE_AMOUNT) ? MIN_TRADE_AMOUNT : whskBalance;
+            //min_trade_amount
+            tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? initialWhskBalance : ethers.constants.Zero;
             tokenToUse = whsk;
             
             if (tradeAmount.isZero()) {
-                console.log('WHSK 잔액이 부족합니다.');
+                console.log('WHSK 잔액이 최소 거래 금액보다 부족합니다.');
                 isExecutingArbitrage = false;
                 return;
             }
-            
+
             // 1. AMM B에 WHSK 승인
             console.log('Approving WHSK for AMM B...');
             const approvalTx1 = await whskWithSigner.approve(ammB, tradeAmount);
@@ -179,8 +178,8 @@ async function executeArbitrage(
             
             // 3. 받은 USDT 확인
             const newUsdtBalance = await usdtContract.balanceOf(wallet.address);
-            const usdtReceived = newUsdtBalance.sub(usdtBalance);
-            console.log(`Received ${ethers.utils.formatUnits(usdtReceived, await usdtContract.decimals())} USDT`);
+            const usdtReceived = newUsdtBalance.sub(initialUsdtBalance);
+            console.log(`Received ${usdtReceived.toString()} USDT`);
             
             // 4. AMM A에 USDT 승인
             console.log('Approving USDT for AMM A...');
@@ -197,11 +196,11 @@ async function executeArbitrage(
         } else {
             // AMM A에서 USDT 구매 후 AMM B에 판매
             // WHSK로 시작하는 것이 좋음
-            tradeAmount = whskBalance.gt(MIN_TRADE_AMOUNT) ? MIN_TRADE_AMOUNT : whskBalance;
+            tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? initialWhskBalance : ethers.constants.Zero;
             tokenToUse = whsk;
             
             if (tradeAmount.isZero()) {
-                console.log('WHSK 잔액이 부족합니다.');
+                console.log('WHSK 잔액이 최소 거래 금액보다 부족합니다.');
                 isExecutingArbitrage = false;
                 return;
             }
@@ -220,8 +219,8 @@ async function executeArbitrage(
             
             // 3. 받은 USDT 확인
             const newUsdtBalance = await usdtContract.balanceOf(wallet.address);
-            const usdtReceived = newUsdtBalance.sub(usdtBalance);
-            console.log(`Received ${ethers.utils.formatUnits(usdtReceived, await usdtContract.decimals())} USDT`);
+            const usdtReceived = newUsdtBalance.sub(initialUsdtBalance);
+            console.log(`Received ${usdtReceived.toString()} USDT`);
             
             // 4. AMM B에 USDT 승인
             console.log('Approving USDT for AMM B...');
@@ -237,15 +236,15 @@ async function executeArbitrage(
         }
         
         // 최종 잔액 확인 및 수익 계산
-        const finalUsdtBalance = await usdtContract.balanceOf(wallet.address);
-        const finalWhskBalance = await whskContract.balanceOf(wallet.address);
+        const finalUsdtBalance = await usdtContract.balanceOf(wallet.address).toString()
+        const finalWhskBalance = await whskContract.balanceOf(wallet.address).toString()
         
         console.log('\n--- ARBITRAGE COMPLETED ---');
-        console.log(`Initial balances - USDT: ${ethers.utils.formatUnits(usdtBalance, await usdtContract.decimals())}, WHSK: ${ethers.utils.formatUnits(whskBalance, await whskContract.decimals())}`);
-        console.log(`Final balances - USDT: ${ethers.utils.formatUnits(finalUsdtBalance, await usdtContract.decimals())}, WHSK: ${ethers.utils.formatUnits(finalWhskBalance, await whskContract.decimals())}`);
+        console.log(`Initial balances - USDT: ${initialUsdtBalance.toString()}, WHSK: ${initialUsdtBalance.toString()}`);
+        console.log(`Final balances - USDT: ${finalUsdtBalance.toString()}, WHSK: ${finalWhskBalance.toString()}`);
         
-        const whskProfit = finalWhskBalance.sub(whskBalance);
-        console.log(`Profit: ${ethers.utils.formatUnits(whskProfit, await whskContract.decimals())} WHSK`);
+        const whskProfit = finalWhskBalance.sub(initialWhskBalance);
+        console.log(`Profit: ${whskProfit.toStirng()} WHSK`);
         
     } catch (error) {
         console.error('Arbitrage execution error:', error);

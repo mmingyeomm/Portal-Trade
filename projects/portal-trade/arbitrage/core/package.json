@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "ts-node main.js",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn index.ts"
+    "dev": "ts-node-dev --respawn index.ts",
+    "yeseul" : "ts-node main.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "dotenv": "^16.4.7",
     "ethers": "^5.8.0"
   }
 }
