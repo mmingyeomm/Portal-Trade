@@ -1,0 +1,340 @@
+@import "tailwindcss";
+
+:root {
+  --animation-slow: 1s;
+  --animation-medium: 0.5s;
+  --animation-fast: 0.3s;
+  
+  --pastel-blue: #4A90E2;
+  --pastel-pink: #C25B7C;
+  --pastel-purple: #9A5CB4;
+  --pastel-green: #4CAF50;
+  --pastel-yellow: #F9A825;
+  --warning: #FF8F00;
+  
+  --background-light: #F5F7FA;
+  --background-dark: #1E222B;
+  
+  --card-bg-light: rgba(255, 255, 255, 0.9);
+  --card-bg-dark: rgba(30, 34, 43, 0.9);
+  
+  --card-border-light: rgba(0, 0, 0, 0.1);
+  --card-border-dark: rgba(255, 255, 255, 0.08);
+
+  --background: #FFFFFF;
+  --foreground: #333333;
+  --primary: var(--pastel-blue);
+  --secondary: var(--pastel-pink);
+  --accent: var(--pastel-purple);
+  --success: var(--pastel-green);
+  
+  --card-bg: #FFFFFF;
+  --card-border: rgba(0, 0, 0, 0.05);
+  --card-shadow: rgba(0, 0, 0, 0.05);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-warning: var(--warning);
+  --color-success: var(--success);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a1a1a;
+    --foreground: #f0f0f0;
+    --card-bg: #252525;
+    --card-border: rgba(255, 255, 255, 0.05);
+    --card-shadow: rgba(0, 0, 0, 0.2);
+    
+    --primary: #7EB7D9;
+    --secondary: #E6A6B9;
+    --accent: #BF8FE6;
+    --warning: #E6DE8A;
+    --success: #9CC073;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* 카드 애니메이션 */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px var(--card-shadow);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              box-shadow 0.3s ease,
+              opacity 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 28px var(--card-shadow);
+}
+
+/* 버튼 애니메이션 */
+.btn-primary, .btn-secondary {
+  position: relative;
+  background-color: var(--primary);
+  color: var(--foreground);
+  padding: 0.5rem 1.5rem;
+  border-radius: 2rem;
+  font-weight: 500;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.btn-primary::before, .btn-secondary::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  z-index: -1;
+}
+
+.btn-primary:hover::before, .btn-secondary:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(168, 216, 234, 0.3);
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(255, 202, 212, 0.3);
+}
+
+.pastel-gradient {
+  background: linear-gradient(135deg, var(--pastel-blue), var(--pastel-pink));
+}
+
+/* 그라데이션 애니메이션 */
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradientFlow var(--animation-slow) ease infinite alternate;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* 페이드 인 애니메이션 */
+.fade-in {
+  animation: fadeIn var(--animation-medium) ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 애니메이션 지연 클래스 */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* 부드러운 펄스 애니메이션 */
+.pulse {
+  animation: pulse var(--animation-slow) infinite ease-in-out alternate;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
+}
+
+/* 호버 시 반짝임 효과 */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shine var(--animation-slow) infinite linear;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.shine:hover::after {
+  opacity: 1;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* 물결 효과 */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1);
+  animation: ripple var(--animation-medium) ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(50);
+    opacity: 0;
+  }
+}
+
+/* 배경 흐름 애니메이션 */
+.bg-flow {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-flow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(168, 216, 234, 0.1),
+    rgba(255, 202, 212, 0.1),
+    rgba(213, 170, 255, 0.1)
+  );
+  background-size: 300% 300%;
+  animation: bgFlow 10s ease infinite;
+  z-index: -1;
+  border-radius: inherit;
+}
+
+@keyframes bgFlow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 링크 버튼 스타일 */
+.link-button {
+  display: inline-block;
+  background-color: var(--pastel-blue);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.link-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px -3px rgba(74, 144, 226, 0.4);
+}
+
+.link-button:active {
+  transform: translateY(0);
+}
+
+.link-button-pink {
+  background-color: var(--pastel-pink);
+}
+
+.link-button-pink:hover {
+  box-shadow: 0 6px 15px -3px rgba(194, 91, 124, 0.4);
+}
