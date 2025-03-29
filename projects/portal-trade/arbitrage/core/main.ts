@@ -1,6 +1,8 @@
 import { ethers } from 'ethers';
 import { ERC20_ABI, AMM_ABI, ammA, ammB, usdt, whsk } from './contractData.js';
 import dotenv from 'dotenv';
+import { BigNumber } from 'ethers';
+
 
 dotenv.config();
 
@@ -17,7 +19,8 @@ const MIN_PROFITABLE_DIFF_BPS = 50; // 0.5%
 
 // 가스 비용 및 슬리피지를 고려한 최소 거래 금액
 
-const MIN_TRADE_AMOUNT = ethers.utils.parseUnits('1000000', 0); // amm pool 0.5% 최소거래금액. (10000000hsk있다면 50000hsk가 최소거래금액)
+const MIN_TRADE_AMOUNT = ethers.utils.parseUnits('999', 0); // amm pool 0.5% 최소거래금액. (10000000hsk있다면 50000hsk가 최소거래금액)
+const TRADE_AMOUNT=ethers.utils.parseUnits('1000', 0);
 
 // 아비트라지 실행 중인지 확인하는 플래그
 let isExecutingArbitrage = false;
@@ -81,36 +84,40 @@ async function detectArbitrageOpportunities() {
         
         // 아비트라지 가능성 확인 (가스 비용 고려)
         if (priceDiffBps.gt(MIN_PROFITABLE_DIFF_BPS)) {
-            console.log('\n🚨 ARBITRAGE OPPORTUNITY DETECTED 🚨');
+            //const expectedProfit = calculateExpectedProfit(TRADE_AMOUNT, );
+            //if(expectedProfit.gt(0)){
+            if(true){
+                console.log('\n🚨 ARBITRAGE OPPORTUNITY DETECTED 🚨');
+
+                // 아비트라지 방향 결정
+                const isAmmAHigher: boolean = priceUsdtInAmmA.gt(priceUsdtInAmmB);
+                if (isAmmAHigher) {
+                    console.log(`Direction: Buy USDT from AMM B, sell to AMM A`);
+                } else {
+                    console.log(`Direction: Buy USDT from AMM A, sell to AMM B`);
+                }
+
+                // 아비트라지 실행
+                executeArbitrage(
+                    isAmmAHigher, 
+                    ammAContract, 
+                    ammBContract, 
+                    usdtContract, 
+                    whskContract,
+                    isUsdtTokenAInAmmA,
+                    isUsdtTokenAInAmmB
+                );
             
-            // 아비트라지 방향 결정
-            const isAmmAHigher: boolean = priceUsdtInAmmA.gt(priceUsdtInAmmB);
-            if (isAmmAHigher) {
-                console.log(`Direction: Buy USDT from AMM B, sell to AMM A`);
-            } else {
-                console.log(`Direction: Buy USDT from AMM A, sell to AMM B`);
+                return {
+                    hasOpportunity: true,
+                    priceDiffPercent,
+                    priceAmmA: formattedPriceInAmmA,
+                    priceAmmB: formattedPriceInAmmB,
+                    direction: isAmmAHigher ? 'B->A' : 'A->B'
+                };
             }
             
-            // 아비트라지 실행
-            executeArbitrage(
-                isAmmAHigher, 
-                ammAContract, 
-                ammBContract, 
-                usdtContract, 
-                whskContract,
-                isUsdtTokenAInAmmA,
-                isUsdtTokenAInAmmB
-            );
-            
-            return {
-                hasOpportunity: true,
-                priceDiffPercent,
-                priceAmmA: formattedPriceInAmmA,
-                priceAmmB: formattedPriceInAmmB,
-                direction: isAmmAHigher ? 'B->A' : 'A->B'
-            };
         }
-        
         return { 
             hasOpportunity: false,
             priceAmmA: formattedPriceInAmmA,
@@ -154,10 +161,11 @@ async function executeArbitrage(
         let tokenToUse: string;
         
         if (isAmmAHigher) {
+
             // AMM B에서 USDT 구매 후 AMM A에 판매
             // WHSK로 시작하는 것이 좋음
             //min_trade_amount
-            tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? ethers.utils.parseUnits("1000000", 0) : ethers.constants.Zero;
+            tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? ethers.utils.parseUnits("1000", 0) : ethers.constants.Zero;
             tokenToUse = whsk;
             
             if (tradeAmount.isZero()) {
@@ -182,7 +190,7 @@ async function executeArbitrage(
             
             // 3. 받은 USDT 확인
             const newUsdtBalance = await usdtContract.balanceOf(wallet.address);
-            const usdtReceived = newUsdtBalance.sub(initialUsdtBalance);
+            const usdtReceived = await newUsdtBalance.sub(initialUsdtBalance);
             console.log(`Received ${usdtReceived.toString()} USDT`);
             
             // 4. AMM A에 USDT 승인
@@ -205,7 +213,7 @@ async function executeArbitrage(
         } else {
             // AMM A에서 USDT 구매 후 AMM B에 판매
             // WHSK로 시작하는 것이 좋음
-            tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? ethers.utils.parseUnits("1000000", 0): ethers.constants.Zero;
+            tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? ethers.utils.parseUnits("1000", 0): ethers.constants.Zero;
             tokenToUse = whsk;
             
             if (tradeAmount.isZero()) {
@@ -230,7 +238,7 @@ async function executeArbitrage(
             
             // 3. 받은 USDT 확인
             const newUsdtBalance = await usdtContract.balanceOf(wallet.address);
-            const usdtReceived = newUsdtBalance.sub(initialUsdtBalance);
+            const usdtReceived = await newUsdtBalance.sub(initialUsdtBalance);
             console.log(`Received ${usdtReceived.toString()} USDT`);
             
             // 4. AMM B에 USDT 승인
@@ -268,6 +276,27 @@ async function executeArbitrage(
         isExecutingArbitrage = false;
     }
 }
+
+// async function calculateExpectedProfit(
+//     tradeAmount: BigNumber,
+//     hskReserveFrom: BigNumber,
+//     usdtReserveFrom: BigNumber,
+//     hskReserveTo: BigNumber,
+//     usdtReserveTo: BigNumber
+//     ):Promise<BigNumber> {
+//     const amountInWithFee = tradeAmount.mul(997);
+//     const numeratorB = amountInWithFee.mul(usdtReserveFrom);
+//     const denominatorB = hskReserveFrom.mul(1000).add(amountInWithFee);
+//     const usdtOut = numeratorB.div(denominatorB); // 1단계: HSK → USDT (from pool)
+
+//     const amountInWithFee2 = usdtOut.mul(997);
+//     const numeratorA = amountInWithFee2.mul(hskReserveTo);
+//     const denominatorA = usdtReserveTo.mul(1000).add(amountInWithFee2);
+//     const hskOut = numeratorA.div(denominatorA); // 2단계: USDT → HSK (to pool)
+
+//     const profit = hskOut.sub(tradeAmount);
+//     return profit;
+//     }
 
 async function startArbitrageMonitoring(intervalMs = 10000) {
     // 초기 검사
