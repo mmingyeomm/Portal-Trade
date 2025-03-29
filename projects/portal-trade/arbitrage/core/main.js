@@ -150,15 +150,12 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 console.log(`Approval transaction: ${approvalTx1.hash}`);
                 // 2. AMM B에서 WHSK를 USDT로 스왑
                 console.log('Swapping WHSK to USDT in AMM B...');
-                console.log(`\n WHSK ${tradeAmount.toString()}만큼 스왑 시도`);
                 const swapTx1 = yield ammBWithSigner.swap(contractData_js_1.whsk, tradeAmount);
                 yield swapTx1.wait();
                 console.log(`Swap transaction: ${swapTx1.hash}`);
                 new Promise(resolve => setTimeout(resolve, 1000));
                 // 3. 받은 USDT 확인
                 const newUsdtBalance = yield usdtContract.balanceOf(wallet.address);
-                console.log("\n아까 지갑 잔액 USDT ", initialUsdtBalance.toString());
-                console.log("\n지금 !!!! 지갑 잔액 USDT ", newUsdtBalance.toString());
                 const usdtReceived = yield newUsdtBalance.sub(initialUsdtBalance);
                 console.log(`Received ${usdtReceived.toString()} USDT`);
                 // 4. AMM A에 USDT 승인
@@ -195,15 +192,12 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 console.log(`Approval transaction: ${approvalTx1.hash}`);
                 // 2. AMM A에서 WHSK를 USDT로 스왑
                 console.log('Swapping WHSK to USDT in AMM A...');
-                console.log(`\n WHSK ${tradeAmount.toString()}만큼 스왑 시도`);
                 const swapTx1 = yield ammAWithSigner.swap(contractData_js_1.whsk, tradeAmount);
                 yield swapTx1.wait();
                 console.log(`Swap transaction: ${swapTx1.hash}`);
                 new Promise(resolve => setTimeout(resolve, 1000));
                 // 3. 받은 USDT 확인
                 const newUsdtBalance = yield usdtContract.balanceOf(wallet.address);
-                console.log("\n아까 지갑 잔액 USDT ", initialUsdtBalance.toString());
-                console.log("\n지금 지갑 잔액 USDT ", newUsdtBalance.toString());
                 const usdtReceived = yield newUsdtBalance.sub(initialUsdtBalance);
                 console.log(`Received ${usdtReceived.toString()} USDT`);
                 // 4. AMM B에 USDT 승인

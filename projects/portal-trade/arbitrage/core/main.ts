@@ -185,7 +185,6 @@ async function executeArbitrage(
             
             // 2. AMM B에서 WHSK를 USDT로 스왑
             console.log('Swapping WHSK to USDT in AMM B...');
-            console.log(`\n WHSK ${tradeAmount.toString()}만큼 스왑 시도`)
             const swapTx1 = await ammBWithSigner.swap(whsk, tradeAmount);
             await swapTx1.wait();
             console.log(`Swap transaction: ${swapTx1.hash}`);
@@ -195,8 +194,6 @@ async function executeArbitrage(
             // 3. 받은 USDT 확인
             
             const newUsdtBalance = await usdtContract.balanceOf(wallet.address);
-            console.log("\n아까 지갑 잔액 USDT ",initialUsdtBalance.toString())
-            console.log("\n지금 !!!! 지갑 잔액 USDT ",newUsdtBalance.toString())
             const usdtReceived = await newUsdtBalance.sub(initialUsdtBalance);
             console.log(`Received ${usdtReceived.toString()} USDT`);
 
@@ -240,7 +237,6 @@ async function executeArbitrage(
             
             // 2. AMM A에서 WHSK를 USDT로 스왑
             console.log('Swapping WHSK to USDT in AMM A...');
-            console.log(`\n WHSK ${tradeAmount.toString()}만큼 스왑 시도`)
             const swapTx1 = await ammAWithSigner.swap(whsk, tradeAmount);
             await swapTx1.wait();
             console.log(`Swap transaction: ${swapTx1.hash}`);
@@ -248,8 +244,6 @@ async function executeArbitrage(
             new Promise(resolve => setTimeout(resolve, 1000))
             // 3. 받은 USDT 확인
             const newUsdtBalance = await usdtContract.balanceOf(wallet.address);
-            console.log("\n아까 지갑 잔액 USDT ",initialUsdtBalance.toString())
-            console.log("\n지금 지갑 잔액 USDT ",newUsdtBalance.toString())
             const usdtReceived = await newUsdtBalance.sub(initialUsdtBalance);
             console.log(`Received ${usdtReceived.toString()} USDT`);
             
