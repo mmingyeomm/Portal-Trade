@@ -9,6 +9,13 @@ import "../dependencies/openzeppelin/contracts/IERC20.sol";
  */
 interface IBToken is IERC20 {
     /**
+     * @dev Emitted when yield is transferred to the arbitrage wallet
+     * @param asset The address of the underlying asset
+     * @param arbitrageWallet The address of the arbitrage wallet
+     * @param amount The amount of underlying asset transferred
+     */
+    event YieldTransferredToArbitrage(address indexed asset, address indexed arbitrageWallet, uint256 amount);
+    /**
      * @dev Mints bTokens to the user address
      * @param user The address receiving the minted tokens
      * @param amount The amount of tokens being minted

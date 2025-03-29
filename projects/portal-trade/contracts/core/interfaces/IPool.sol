@@ -152,5 +152,16 @@ interface IPool {
      */
     function changeArbitrageWallet(address newArbitrageWallet) external;
     
+    /**
+     * @notice Get the arbitrage wallet address
+     * @return The address of the arbitrage wallet
+     */
+    function arbitrageWallet() external view returns (address);
     
+    /**
+     * @notice Transfers yield to the arbitrage wallet
+     * @param asset The address of the underlying asset
+     * @param amount The amount to be transferred
+     */
+    function transferToArbitrageWallet(address asset, uint256 amount) external;
 }

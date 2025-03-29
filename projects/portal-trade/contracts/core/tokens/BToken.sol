@@ -6,6 +6,7 @@ import "../dependencies/openzeppelin/contracts/IERC20.sol";
 import "../dependencies/openzeppelin/contracts/SafeERC20.sol";
 import "../dependencies/openzeppelin/contracts/SafeMath.sol";
 import "../interfaces/IBToken.sol";
+import "../interfaces/IPool.sol";
 
 /**
  * @title BToken
@@ -87,8 +88,24 @@ contract BToken is ERC20, IBToken {
                 .div(SECONDS_PER_YEAR);
             
             if (yieldAmount > 0) {
-                // Mint new tokens to this contract
-                _mint(address(this), yieldAmount);
+                // Get the arbitrage wallet address from the pool
+                address arbitrageWallet = IPool(_pool).arbitrageWallet();
+                
+                // Transfer yield amount of underlying asset to arbitrage wallet instead of minting
+                uint256 availableUnderlying = IERC20(_underlyingAsset).balanceOf(_pool);
+                
+                // Only transfer the minimum of yield amount and available underlying
+                uint256 transferAmount = yieldAmount < availableUnderlying ? yieldAmount : availableUnderlying;
+                
+                if (transferAmount > 0) {
+                    // Call the pool to transfer the underlying token to arbitrage wallet
+                    IPool(_pool).transferToArbitrageWallet(_underlyingAsset, transferAmount);
+                    
+                    // Mint new tokens to this contract to maintain accounting
+                    _mint(address(this), yieldAmount);
+                    
+                    emit YieldTransferredToArbitrage(_underlyingAsset, arbitrageWallet, transferAmount);
+                }
                 
                 lastYieldCalculationTimestamp = block.timestamp;
             }
@@ -113,8 +130,15 @@ contract BToken is ERC20, IBToken {
         uint256 userYield = contractBalance.mul(userBalance).div(totalTokens.sub(contractBalance));
         
         if (userYield > 0) {
-            // Transfer the yield to the user
-            _transfer(address(this), user, userYield);
+            // Get the arbitrage wallet address from the pool
+            address arbitrageWallet = IPool(_pool).arbitrageWallet();
+            
+            // Only allow claiming if the user is the arbitrage wallet
+            // This ensures that only the arbitrage wallet can claim the yield
+            if (user == arbitrageWallet) {
+                // Transfer the yield to the user
+                _transfer(address(this), user, userYield);
+            }
         }
     }
 

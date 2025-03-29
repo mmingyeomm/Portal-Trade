@@ -41,6 +41,13 @@ contract Pool is IPool, ReentrancyGuard {
      * @param newArbitrageWallet The new arbitrage wallet address
      */
     event ArbitrageWalletChanged(address indexed oldArbitrageWallet, address indexed newArbitrageWallet);
+    
+    /**
+     * @dev Emitted when yield is transferred to the arbitrage wallet
+     * @param asset The address of the underlying asset
+     * @param amount The amount of the asset transferred
+     */
+    event ArbitrageYieldTransferred(address indexed asset, uint256 amount);
 
     /**
      * @dev Throws if called by any account other than the owner.
@@ -75,6 +82,23 @@ contract Pool is IPool, ReentrancyGuard {
         }
         
         emit ArbitrageWalletChanged(oldArbitrageWallet, newArbitrageWallet);
+    }
+    
+    
+    /**
+     * @notice Transfers yield to the arbitrage wallet
+     * @param asset The address of the underlying asset
+     * @param amount The amount to be transferred
+     */
+    function transferToArbitrageWallet(address asset, uint256 amount) external override {
+        // Only bToken contracts should be able to call this function
+        address bTokenAddress = _reserves[asset].bTokenAddress;
+        require(msg.sender == bTokenAddress, "Only bToken contract can call this function");
+        
+        // Transfer the underlying asset to the arbitrage wallet
+        IERC20(asset).safeTransfer(arbitrageWallet, amount);
+        
+        emit ArbitrageYieldTransferred(asset, amount);
     }
 
 
