@@ -434,8 +434,19 @@ contract Pool is IPool, ReentrancyGuard {
     function getReservesList() external view returns (address[] memory) {
         return _reservesList;
     }
-    
-    
+
+
+    /**
+     * @notice Returns both A and B token addresses for a given asset
+     * @param asset The address of the underlying asset
+     * @return aToken The address of the corresponding aToken
+     * @return bToken The address of the corresponding bToken
+     */
+    function getReserveTokens(address asset) external view override returns (address aToken, address bToken) {
+        aToken = _reserves[asset].aTokenAddress;
+        bToken = _reserves[asset].bTokenAddress;
+        return (aToken, bToken);
+    }
 
     /**
      * @notice Calculates the total value of a user's collateral in terms of a specific base asset

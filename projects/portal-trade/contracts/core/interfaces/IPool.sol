@@ -129,6 +129,15 @@ interface IPool {
      * @return The address of the corresponding bToken
      */
     function getReserveBToken(address asset) external view returns (address);
+
+    /**
+     * @notice Returns both A and B token addresses for a given asset
+     * @param asset The address of the underlying asset
+     * @return aToken The address of the corresponding aToken
+     * @return bToken The address of the corresponding bToken
+     */
+    function getReserveTokens(address asset) external view returns (address aToken, address bToken);
+    
     
     /**
      * @notice Claims yield for a user
