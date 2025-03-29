@@ -30,6 +30,11 @@ const tokenIcons: Record<string, StaticImageData> = {
   USDT: tethIcon,
 };
 
+const tokenNameMap: Record<string, string> = {
+  "wrapped hashkey": "WHSK",
+  tether: "USDT",
+};
+
 export default function Page() {
   const [transactions, setTransactions] = useState<TransactionDetail[]>([]);
 
@@ -71,8 +76,8 @@ export default function Page() {
     <div className={styles.container}>
       <h1>Arbitrage Scanner</h1>
       {transactions.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
+        <div style={{ textAlign: "center", padding: "3rem", color: "#888" }}>
+          <div style={{ fontSize: "2rem", marginBottom: "1rem" }}>⏳</div>
           <p>Loading arbitrage transactions...</p>
         </div>
       ) : (
@@ -108,14 +113,24 @@ export default function Page() {
                           alt={transfer.token.symbol}
                           width={20}
                           height={20}
-                          style={{ filter: 'drop-shadow(0 0 2px rgba(255,255,255,0.3))' }}
+                          style={{
+                            filter:
+                              "drop-shadow(0 0 2px rgba(255,255,255,0.3))",
+                          }}
                         />
                       )}
-                      <span>{transfer.token.name}</span>
+                      <span>
+                        {tokenNameMap[transfer.token.name] ||
+                          transfer.token.name}
+                      </span>
                     </div>
                   </td>
 
-                  <td>{parseFloat(transfer.total.value).toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
+                  <td>
+                    {parseFloat(transfer.total.value).toLocaleString("en-US", {
+                      maximumFractionDigits: 4,
+                    })}
+                  </td>
                   {idx === 0 && (
                     <td rowSpan={tx.token_transfers.length}>
                       {new Date(tx.timestamp).toLocaleString("en-US", {
