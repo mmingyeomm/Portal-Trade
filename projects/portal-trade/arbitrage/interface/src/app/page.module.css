@@ -1,55 +1,80 @@
 .container {
-  max-width: 960px;
+  max-width: 1080px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2.5rem;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: #ecf0f1;
   background-color: #121212;
   min-height: 100vh;
+  background: linear-gradient(135deg, #121212 0%, #1a1a2e 100%);
 }
 
 .container h1 {
   text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
+  font-size: 3rem;
+  margin-bottom: 2.5rem;
   color: #ffffff;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #4fd1c5 0%, #63b3ed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(79, 209, 197, 0.3);
 }
 
 .table {
   width: 100%;
-  border-collapse: collapse;
-  background-color: #1e1e1e;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: rgba(30, 30, 30, 0.7);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border-radius: 16px;
   overflow: hidden;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .table thead {
-  background-color: #2a2a2a;
+  background: linear-gradient(90deg, #2a2a2a 0%, #333340 100%);
   color: #ffffff;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  text-transform: uppercase;
 }
 
 .table th,
 .table td {
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 1.8rem;
   text-align: left;
-  border-bottom: 1px solid #2f2f2f;
+  border-bottom: 1px solid rgba(47, 47, 47, 0.5);
   font-size: 0.95rem;
   vertical-align: middle;
+  transition: background-color 0.3s ease;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(47, 47, 47, 0.3);
 }
 
 .table td a {
   color: #4fd1c5;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: inline-block;
 }
 
 .table td a:hover {
-  text-decoration: underline;
+  color: #63b3ed;
+  text-decoration: none;
+  transform: translateY(-2px);
 }
 
 .table tbody tr:last-child td {
@@ -59,5 +84,16 @@
 .tokenCell {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 6px 12px;
+  max-width: fit-content;
+  transition: all 0.3s ease;
+}
+
+.tokenCell:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
 }

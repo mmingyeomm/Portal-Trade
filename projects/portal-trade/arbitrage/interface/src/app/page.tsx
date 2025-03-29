@@ -70,58 +70,66 @@ export default function Page() {
   return (
     <div className={styles.container}>
       <h1>Arbitrage Scanner</h1>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Tx Hash</th>
-            <th>Token</th>
-            <th>Amount</th>
-            <th>Timestamp</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((tx) =>
-            tx.token_transfers.map((transfer, idx) => (
-              <tr key={`${tx.hash}-${idx}`}>
-                {idx === 0 && (
-                  <td rowSpan={tx.token_transfers.length}>
-                    <a
-                      href={`https://hashkeychain-testnet-explorer.alt.technology/tx/${tx.hash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {tx.hash.slice(0, 10)}...
-                    </a>
+      {transactions.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#888' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>⏳</div>
+          <p>Loading arbitrage transactions...</p>
+        </div>
+      ) : (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Tx Hash</th>
+              <th>Token</th>
+              <th>Amount</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((tx) =>
+              tx.token_transfers.map((transfer, idx) => (
+                <tr key={`${tx.hash}-${idx}`}>
+                  {idx === 0 && (
+                    <td rowSpan={tx.token_transfers.length}>
+                      <a
+                        href={`https://hashkeychain-testnet-explorer.alt.technology/tx/${tx.hash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {tx.hash.slice(0, 10)}...
+                      </a>
+                    </td>
+                  )}
+                  <td>
+                    <div className={styles.tokenCell}>
+                      {tokenIcons[transfer.token.symbol] && (
+                        <Image
+                          src={tokenIcons[transfer.token.symbol]}
+                          alt={transfer.token.symbol}
+                          width={20}
+                          height={20}
+                          style={{ filter: 'drop-shadow(0 0 2px rgba(255,255,255,0.3))' }}
+                        />
+                      )}
+                      <span>{transfer.token.name}</span>
+                    </div>
                   </td>
-                )}
-                <td>
-                  <div className={styles.tokenCell}>
-                    {tokenIcons[transfer.token.symbol] && (
-                      <Image
-                        src={tokenIcons[transfer.token.symbol]}
-                        alt={transfer.token.symbol}
-                        width={16}
-                        height={16}
-                      />
-                    )}
-                    <span>{transfer.token.name}</span>
-                  </div>
-                </td>
 
-                <td>{transfer.total.value}</td>
-                {idx === 0 && (
-                  <td rowSpan={tx.token_transfers.length}>
-                    {new Date(tx.timestamp).toLocaleString("en-US", {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    })}
-                  </td>
-                )}
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+                  <td>{parseFloat(transfer.total.value).toLocaleString('en-US', { maximumFractionDigits: 4 })}</td>
+                  {idx === 0 && (
+                    <td rowSpan={tx.token_transfers.length}>
+                      {new Date(tx.timestamp).toLocaleString("en-US", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
+                    </td>
+                  )}
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
