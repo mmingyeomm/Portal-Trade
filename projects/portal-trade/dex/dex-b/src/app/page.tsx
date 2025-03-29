@@ -601,9 +601,9 @@ const ammABI = [
   },
 ];
 
-const tokenA_Address = "0x9019E896F66D5D1eF245e11D7Bc37b284337dB17"; //USDT
-const tokenB_Address = "0x20d9c569B100352dcDcD501a4aa911511EBD0269"; //WHSK
-const ammAddress = "0xB8f1e8033628C1646BE2b2502e7D01f9115A0964"; //dexB
+const tokenA_Address = "0xC9Fa092cC3788E34f1a56031d536d25897F0F242"; //USDT
+const tokenB_Address = "0xb424976B6776e373f3F3163076B4351EC06453F5"; //WHSK
+const ammAddress = "0x85faCE1EE985CFb45Cb28D682847c26d9beAB89a"; //dexB
 
 interface SwapIconProps {
   className?: string;
