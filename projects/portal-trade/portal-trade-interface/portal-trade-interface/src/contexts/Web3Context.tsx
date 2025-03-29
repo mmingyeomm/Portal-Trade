@@ -321,30 +321,57 @@ export const Web3Provider = ({ children }: { children: ReactNode }) => {
 
   // 사용자 자산 잔액 조회 함수
   const getUserAssetBalance = async (assetAddress: Address, supplyType: SupplyType): Promise<string> => {
+    console.log('getUserAssetBalance 호출됨:', { assetAddress, supplyType });
+    
     if (!poolContract || !account) {
+      console.log('poolContract 또는 account가 없음 - 0 반환');
       return '0';
     }
 
     try {
+      console.log('컨트랙트 메서드 호출 시작...');
+      console.log('파라미터:', assetAddress, account, supplyType);
       const balanceWei = await poolContract.getUserAssetBalance(assetAddress, account, supplyType);
-      return ethers.formatEther(balanceWei);
+      console.log('컨트랙트에서 받은 원시 잔액 (Wei):', balanceWei.toString());
+      
+      const formattedBalance = ethers.formatEther(balanceWei);
+      console.log('Ether 단위로 변환된 잔액:', formattedBalance);
+      
+      return formattedBalance;
     } catch (error) {
-      console.error('잔액 조회 오류:', error);
+      console.error('잔액 조회 중 오류 발생:', error);
+      console.log('오류 세부 정보:', error instanceof Error ? error.message : String(error));
+      
+      // 오류 스택 추적 출력 (있는 경우)
+      if (error instanceof Error && error.stack) {
+        console.log('오류 스택 추적:', error.stack);
+      }
+      
       return '0';
     }
   };
 
   // 사용자 대출 금액 조회 함수
   const getUserBorrowAmount = async (assetAddress: Address): Promise<string> => {
+    console.log('getUserBorrowAmount 호출됨:', { assetAddress });
+    
     if (!poolContract || !account) {
+      console.log('poolContract 또는 account가 없음 - 0 반환');
       return '0';
     }
 
     try {
+      console.log('컨트랙트 메서드 호출 시작...');
       const borrowAmountWei = await poolContract.getUserBorrowAmount(assetAddress, account);
-      return ethers.formatEther(borrowAmountWei);
+      console.log('컨트랙트에서 받은 원시 대출 금액 (Wei):', borrowAmountWei.toString());
+      
+      const formattedAmount = ethers.formatEther(borrowAmountWei);
+      console.log('Ether 단위로 변환된 대출 금액:', formattedAmount);
+      
+      return formattedAmount;
     } catch (error) {
-      console.error('대출 금액 조회 오류:', error);
+      console.error('대출 금액 조회 중 오류 발생:', error);
+      console.log('오류 세부 정보:', error instanceof Error ? error.message : String(error));
       return '0';
     }
   };
