@@ -10,49 +10,54 @@
 
 .container h1 {
   text-align: center;
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 2rem;
-  color: white;
+  color: #ffffff;
+  letter-spacing: 1px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
   background-color: #1e1e1e;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
   overflow: hidden;
 }
 
 .table thead {
-  background-color: #2c2c2c;
-  color: white;
-  font-weight: 600;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
 }
 
 .table th,
 .table td {
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   text-align: left;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #2f2f2f;
   font-size: 0.95rem;
+  vertical-align: middle;
 }
 
 .table td a {
-  color: #ffffff; /* 기존의 #3498db → 흰색 */
+  color: #4fd1c5;
   text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
 }
 
 .table td a:hover {
   text-decoration: underline;
 }
 
-.table tbody tr:hover {
-  background-color: transparent;
+.table tbody tr:last-child td {
+  border-bottom: none;
 }
 
-/* 대신 Tx Hash 칸만 hover 시 배경 강조 */
-.table td:first-child:hover {
-  background-color: #2f2f2f;
-  transition: background-color 0.2s ease;
+.tokenCell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }

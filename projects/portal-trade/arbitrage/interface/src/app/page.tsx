@@ -2,6 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "./page.module.css";
+import hskIcon from "../assets/hsk.svg";
+import tethIcon from "../assets/teth.svg";
+import Image from "next/image";
+import type { StaticImageData } from "next/image";
 
 interface TokenTransfer {
   token: {
@@ -20,6 +24,11 @@ interface TransactionDetail {
 }
 
 const targetAddress = "0x8EC3C8D7a81D8e808788fad3a6C56ba698f35626";
+
+const tokenIcons: Record<string, StaticImageData> = {
+  WHSK: hskIcon,
+  USDT: tethIcon,
+};
 
 export default function Page() {
   const [transactions, setTransactions] = useState<TransactionDetail[]>([]);
@@ -74,31 +83,40 @@ export default function Page() {
           {transactions.map((tx) =>
             tx.token_transfers.map((transfer, idx) => (
               <tr key={`${tx.hash}-${idx}`}>
-                {idx === 0 ? (
-                  <>
-                    <td rowSpan={tx.token_transfers.length}>
-                      <a
-                        href={`https://hashkeychain-testnet-explorer.alt.technology/tx/${tx.hash}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {tx.hash.slice(0, 10)}...
-                      </a>
-                    </td>
-                  </>
-                ) : null}
+                {idx === 0 && (
+                  <td rowSpan={tx.token_transfers.length}>
+                    <a
+                      href={`https://hashkeychain-testnet-explorer.alt.technology/tx/${tx.hash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {tx.hash.slice(0, 10)}...
+                    </a>
+                  </td>
+                )}
                 <td>
-                  {transfer.token.name} ({transfer.token.symbol})
+                  <div className={styles.tokenCell}>
+                    {tokenIcons[transfer.token.symbol] && (
+                      <Image
+                        src={tokenIcons[transfer.token.symbol]}
+                        alt={transfer.token.symbol}
+                        width={16}
+                        height={16}
+                      />
+                    )}
+                    <span>{transfer.token.name}</span>
+                  </div>
                 </td>
+
                 <td>{transfer.total.value}</td>
-                {idx === 0 ? (
+                {idx === 0 && (
                   <td rowSpan={tx.token_transfers.length}>
                     {new Date(tx.timestamp).toLocaleString("en-US", {
                       dateStyle: "medium",
                       timeStyle: "short",
                     })}
                   </td>
-                ) : null}
+                )}
               </tr>
             ))
           )}
