@@ -1,6 +1,7 @@
 import React from "react";
 import { ArbitrageTransaction } from "@/types";
 import styles from "../app/page.module.css";
+import Image from "next/image";
 
 interface TransactionItemProps {
   transactions: ArbitrageTransaction[]; // length: 3
@@ -37,7 +38,18 @@ export default function TransactionItem({
   return (
     <div className={styles.item}>
       <div className={`${styles.profit} ${profitClass}`} data-label="Profit">
-        {`${isProfitable ? "+" : ""}${profit} ${tx1.tokenName.split("/")[0]}`}
+        <Image
+          src={
+            tx1.tokenName === "WHSK"
+              ? "../src/assets/hsk.svg"
+              : "../src/assets/teth.svg"
+          }
+          alt={tx1.tokenName}
+          width={14}
+          height={14}
+          style={{ marginRight: 6, verticalAlign: "middle" }}
+        />
+        {`${isProfitable ? "+" : ""}${profit} ${tx1.tokenName}`}
       </div>
 
       <div

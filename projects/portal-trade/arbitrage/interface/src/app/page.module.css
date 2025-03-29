@@ -287,10 +287,7 @@
 }
 
 .dex {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
+  font-size: 0.875rem;
 }
 
 .dexIcon {
@@ -305,31 +302,17 @@
   font-size: 0.75rem;
 }
 
-.coins {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .coinPair {
-  font-family: monospace;
   font-size: 0.875rem;
 }
 
-.strategy {
-  display: flex;
-  align-items: center;
-}
-
 .profit {
-  font-weight: 700;
-  font-family: monospace;
+  font-weight: 600;
   color: rgb(104, 216, 102);
 }
 
 .percentage {
-  font-weight: 700;
-  font-family: monospace;
+  font-weight: 600;
   color: rgb(220, 95, 95);
 }
 
