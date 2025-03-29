@@ -595,7 +595,7 @@ exports.AMM_ABI = [
         "type": "function"
     }
 ];
-exports.ammA = '0x68516B8809D8621DDB7e1207C93a35fdA6A2ED0a';
-exports.ammB = '0x85faCE1EE985CFb45Cb28D682847c26d9beAB89a';
+exports.ammA = '0x87ded8a6495c1513CdE5e254697a729Df51fb429';
+exports.ammB = '0xc4ccB11F9E4D6a90D5769B0a6f8a4193D4C12D02';
 exports.whsk = '0xb424976B6776e373f3F3163076B4351EC06453F5';
 exports.usdt = '0xC9Fa092cC3788E34f1a56031d536d25897F0F242';

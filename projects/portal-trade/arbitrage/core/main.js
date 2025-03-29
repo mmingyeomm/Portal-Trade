@@ -25,7 +25,7 @@ const wallet = new ethers_1.ethers.Wallet(PRIVATE_KEY, provider);
 // 최소 수익성 있는 가격 차이 (basis points, 1bp = 0.01%)
 const MIN_PROFITABLE_DIFF_BPS = 50; // 0.5%
 // 가스 비용 및 슬리피지를 고려한 최소 거래 금액
-const MIN_TRADE_AMOUNT = ethers_1.ethers.utils.parseUnits('999', 0); // amm pool 0.5% 최소거래금액. (10000000hsk있다면 50000hsk가 최소거래금액)
+const MIN_TRADE_AMOUNT = ethers_1.ethers.utils.parseUnits('997', 0); // amm pool 0.5% 최소거래금액. (10000000hsk있다면 50000hsk가 최소거래금액)
 const TRADE_AMOUNT = ethers_1.ethers.utils.parseUnits('1000', 0);
 // 아비트라지 실행 중인지 확인하는 플래그
 let isExecutingArbitrage = false;
@@ -123,8 +123,9 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
             const whskWithSigner = whskContract.connect(wallet);
             // 현재 잔액 확인
             const initialUsdtBalance = yield usdtContract.balanceOf(wallet.address);
-            console.log(initialUsdtBalance.toString());
+            console.log("처음 USDT : ", initialUsdtBalance.toString());
             const initialWhskBalance = yield whskContract.balanceOf(wallet.address);
+            console.log("처음 WHSK", initialWhskBalance.toString());
             // 거래 금액 결정 (실제 구현에서는 최적의 금액을 계산해야 함)
             // 여기서는 간단히 MIN_TRADE_AMOUNT 또는 보유 잔액 중 작은 값을 사용
             let tradeAmount;
@@ -133,7 +134,7 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 // AMM B에서 USDT 구매 후 AMM A에 판매
                 // WHSK로 시작하는 것이 좋음
                 //min_trade_amount
-                tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? ethers_1.ethers.utils.parseUnits("1000", 0) : ethers_1.ethers.constants.Zero;
+                tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? TRADE_AMOUNT : ethers_1.ethers.constants.Zero;
                 tokenToUse = contractData_js_1.whsk;
                 if (tradeAmount.isZero()) {
                     console.log('my whsk : ', initialWhskBalance.toString());
@@ -149,12 +150,16 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 console.log(`Approval transaction: ${approvalTx1.hash}`);
                 // 2. AMM B에서 WHSK를 USDT로 스왑
                 console.log('Swapping WHSK to USDT in AMM B...');
+                console.log(`\n WHSK ${tradeAmount.toString()}만큼 스왑 시도`);
                 const swapTx1 = yield ammBWithSigner.swap(contractData_js_1.whsk, tradeAmount);
                 yield swapTx1.wait();
                 console.log(`Swap transaction: ${swapTx1.hash}`);
+                new Promise(resolve => setTimeout(resolve, 1000));
                 // 3. 받은 USDT 확인
                 const newUsdtBalance = yield usdtContract.balanceOf(wallet.address);
-                const usdtReceived = newUsdtBalance.sub(initialUsdtBalance);
+                console.log("\n아까 지갑 잔액 USDT ", initialUsdtBalance.toString());
+                console.log("\n지금 !!!! 지갑 잔액 USDT ", newUsdtBalance.toString());
+                const usdtReceived = yield newUsdtBalance.sub(initialUsdtBalance);
                 console.log(`Received ${usdtReceived.toString()} USDT`);
                 // 4. AMM A에 USDT 승인
                 console.log('Approving USDT for AMM A...');
@@ -168,13 +173,13 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 console.log(`Swap transaction: ${swapTx2.hash}`);
                 // 6. 늘어난 WHSK 확인
                 const finalWhskBalance = yield whskContract.balanceOf(wallet.address);
-                const newWhskReceived = finalWhskBalance.sub(initialWhskBalance);
+                const newWhskReceived = yield finalWhskBalance.sub(initialWhskBalance);
                 console.log(`Received ${newWhskReceived.toString()} WHSK`);
             }
             else {
                 // AMM A에서 USDT 구매 후 AMM B에 판매
                 // WHSK로 시작하는 것이 좋음
-                tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? ethers_1.ethers.utils.parseUnits("1000000", 0) : ethers_1.ethers.constants.Zero;
+                tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? TRADE_AMOUNT : ethers_1.ethers.constants.Zero;
                 tokenToUse = contractData_js_1.whsk;
                 if (tradeAmount.isZero()) {
                     console.log('my whsk : ', initialWhskBalance.toString());
@@ -190,12 +195,16 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 console.log(`Approval transaction: ${approvalTx1.hash}`);
                 // 2. AMM A에서 WHSK를 USDT로 스왑
                 console.log('Swapping WHSK to USDT in AMM A...');
+                console.log(`\n WHSK ${tradeAmount.toString()}만큼 스왑 시도`);
                 const swapTx1 = yield ammAWithSigner.swap(contractData_js_1.whsk, tradeAmount);
                 yield swapTx1.wait();
                 console.log(`Swap transaction: ${swapTx1.hash}`);
+                new Promise(resolve => setTimeout(resolve, 1000));
                 // 3. 받은 USDT 확인
                 const newUsdtBalance = yield usdtContract.balanceOf(wallet.address);
-                const usdtReceived = newUsdtBalance.sub(initialUsdtBalance);
+                console.log("\n아까 지갑 잔액 USDT ", initialUsdtBalance.toString());
+                console.log("\n지금 지갑 잔액 USDT ", newUsdtBalance.toString());
+                const usdtReceived = yield newUsdtBalance.sub(initialUsdtBalance);
                 console.log(`Received ${usdtReceived.toString()} USDT`);
                 // 4. AMM B에 USDT 승인
                 console.log('Approving USDT for AMM B...');
@@ -209,7 +218,7 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 console.log(`Swap transaction: ${swapTx2.hash}`);
                 // 6. 늘어난 WHSK 확인
                 const finalWhskBalance = yield whskContract.balanceOf(wallet.address);
-                const newWhskReceived = finalWhskBalance.sub(initialWhskBalance);
+                const newWhskReceived = yield finalWhskBalance.sub(initialWhskBalance);
                 console.log(`Received ${newWhskReceived.toString()} WHSK`);
             }
             // 최종 잔액 확인 및 수익 계산
@@ -259,3 +268,6 @@ function startArbitrageMonitoring() {
 }
 // 모니터링 시작
 startArbitrageMonitoring();
+function delay(arg0) {
+    throw new Error('Function not implemented.');
+}
