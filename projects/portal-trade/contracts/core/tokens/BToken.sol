@@ -5,13 +5,13 @@ import "../dependencies/openzeppelin/contracts/ERC20.sol";
 import "../dependencies/openzeppelin/contracts/IERC20.sol";
 import "../dependencies/openzeppelin/contracts/SafeERC20.sol";
 import "../dependencies/openzeppelin/contracts/SafeMath.sol";
-import "../interfaces/IAToken.sol";
+import "../interfaces/IBToken.sol";
 
 /**
- * @title AToken
- * @dev Implementation of the interest bearing token for the lending protocol.
+ * @title BToken
+ * @dev Implementation of the arbitrage token for the lending protocol.
  */
-contract AToken is ERC20, IAToken {
+contract BToken is ERC20, IBToken {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -19,8 +19,8 @@ contract AToken is ERC20, IAToken {
     address private _pool;
     address public owner;
     
-    // Yield rate for AToken holders: 5% annual yield
-    uint256 public constant YIELD_RATE = 500; // 5.00% represented as basis points
+    // Yield rate for BToken holders: 5.32% annual yield
+    uint256 public constant YIELD_RATE = 532; // 5.32% represented as basis points
     uint256 public constant BASIS_POINTS = 10000; // 100% = 10000 basis points
     uint256 public constant SECONDS_PER_YEAR = 31536000; // 365 days * 24 hours * 60 minutes * 60 seconds
     
@@ -119,7 +119,7 @@ contract AToken is ERC20, IAToken {
     }
 
     /**
-     * @dev Mints aTokens to the user address
+     * @dev Mints bTokens to the user address
      * @param user The address receiving the minted tokens
      * @param amount The amount of tokens being minted
      */
@@ -128,7 +128,7 @@ contract AToken is ERC20, IAToken {
     }
 
     /**
-     * @dev Burns aTokens from the user address
+     * @dev Burns bTokens from the user address
      * @param user The address of the user tokens are being burned from
      * @param amount The amount of tokens being burned
      * @return The amount of underlying asset that was redeemed

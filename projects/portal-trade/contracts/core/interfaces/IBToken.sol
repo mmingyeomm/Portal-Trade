@@ -4,19 +4,19 @@ pragma solidity ^0.8.0;
 import "../dependencies/openzeppelin/contracts/IERC20.sol";
 
 /**
- * @title IAToken
- * @dev Interface for the aToken contract.
+ * @title IBToken
+ * @dev Interface for the bToken contract (arbitrage token).
  */
-interface IAToken is IERC20 {
+interface IBToken is IERC20 {
     /**
-     * @dev Mints aTokens to the user address
+     * @dev Mints bTokens to the user address
      * @param user The address receiving the minted tokens
      * @param amount The amount of tokens being minted
      */
     function mint(address user, uint256 amount) external;
 
     /**
-     * @dev Burns aTokens from the user address
+     * @dev Burns bTokens from the user address
      * @param user The address of the user tokens are being burned from
      * @param amount The amount of tokens being burned
      * @return The amount of underlying asset that was redeemed
