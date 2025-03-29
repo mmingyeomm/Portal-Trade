@@ -603,7 +603,7 @@ const ammABI = [
 
 const tokenA_Address = "0xC9Fa092cC3788E34f1a56031d536d25897F0F242"; //USDT
 const tokenB_Address = "0xb424976B6776e373f3F3163076B4351EC06453F5"; //WHSK
-const ammAddress = "0x85faCE1EE985CFb45Cb28D682847c26d9beAB89a"; //dexB
+const ammAddress = "0xc2B9a37b55205E78132a6C36C57C0041F0A92d2D"; //dexB
 
 interface SwapIconProps {
   className?: string;
