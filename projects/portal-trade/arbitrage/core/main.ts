@@ -34,6 +34,8 @@ async function detectArbitrageOpportunities() {
     const whskContract = new ethers.Contract(whsk, ERC20_ABI, provider);
 
     try {
+
+        
         // USDT 소수점 가져오기
         const usdtDecimals = await usdtContract.decimals();
         const whskDecimals = await whskContract.decimals();

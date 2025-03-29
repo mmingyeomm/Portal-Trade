@@ -596,5 +596,5 @@ export const AMM_ABI = [
 
 export const ammA = '0xE6bD1F20389b8f9e3aa45F5bF5A3055eE3C90329';
 export const ammB = '0xB8f1e8033628C1646BE2b2502e7D01f9115A0964';
-export const usdt = '0x880eE68a9b6E51601c07196dff5BE1bf3764E8Ac';
-export const whsk = '0xc6FA3F7710662Be44Fc10c6beeB4fF1575aADaB6';
+export const usdt = '0x9019E896F66D5D1eF245e11D7Bc37b284337dB17';
+export const whsk = '0x20d9c569B100352dcDcD501a4aa911511EBD0269';
