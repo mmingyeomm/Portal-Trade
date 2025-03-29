@@ -268,8 +268,8 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border-color);
-  font-size: 0.875rem;
-  color: var(--muted-text);
+  font-size: 1rem;
+  color: white;
   font-weight: 500;
 }
 
@@ -322,8 +322,15 @@
 }
 
 .profit {
-  font-weight: 600;
+  font-weight: 700;
   font-family: monospace;
+  color: rgb(104, 216, 102);
+}
+
+.percentage {
+  font-weight: 700;
+  font-family: monospace;
+  color: rgb(220, 95, 95);
 }
 
 .timestamp {

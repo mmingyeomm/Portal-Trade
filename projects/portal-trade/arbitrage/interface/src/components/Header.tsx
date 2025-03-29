@@ -3,22 +3,33 @@ import { ArbitrageTransaction } from "../types";
 import styles from "../app/page.module.css";
 
 interface HeaderProps {
-  transactions: ArbitrageTransaction[][];
+  transactions: ArbitrageTransaction[][]; // 배열의 배열
 }
 
 export default function Header({ transactions }: HeaderProps) {
-  // Calculate total profit
-  const totalProfit = transactions.reduce(
-    (sum, tx) => sum + tx.profit.amount,
-    0
-  );
-  const profitCurrency =
-    transactions.length > 0 ? transactions[0].profit.currency : "ETH";
+  // 총 수익 계산
+  const totalProfit = transactions.reduce((sum, group) => {
+    if (group.length === 3) {
+      const profit = group[2].amount - group[0].amount;
+      return sum + profit;
+    }
+    return sum;
+  }, 0);
 
-  // Calculate success rate
-  const successfulTrades = transactions.filter(
-    (tx) => tx.profit.amount > 0
-  ).length;
+  const profitCurrency =
+    transactions.length > 0
+      ? transactions[0][0].tokenName.split("/")[0]
+      : "ETH";
+
+  // 성공 거래 수 계산
+  const successfulTrades = transactions.filter((group) => {
+    if (group.length === 3) {
+      const profit = group[2].amount - group[0].amount;
+      return profit > 0;
+    }
+    return false;
+  }).length;
+
   const successRate =
     transactions.length > 0
       ? ((successfulTrades / transactions.length) * 100).toFixed(1)

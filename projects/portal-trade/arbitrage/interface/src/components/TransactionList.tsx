@@ -1,10 +1,10 @@
 import React from "react";
 import { ArbitrageTransaction } from "../types";
-import ArbitrageCard from "./ArbitrageCard";
+import TransactionItem from "./TransactionItem";
 import styles from "../app/page.module.css";
 
 interface TransactionListProps {
-  transactions: ArbitrageTransaction[];
+  transactions: ArbitrageTransaction[][]; // 배열의 배열
 }
 
 export default function TransactionList({
@@ -13,15 +13,16 @@ export default function TransactionList({
   return (
     <div className="container">
       <div className={styles.tableHeader}>
-        <div>DEX</div>
-        <div>Pair</div>
         <div>Profit</div>
+        <div>Percentage</div>
+        <div>Pair</div>
+        <div>DEX</div>
         <div>Time</div>
       </div>
 
       <div>
-        {transactions.map((transaction) => (
-          <ArbitrageCard key={transaction.id} transaction={transaction} />
+        {transactions.map((txGroup, idx) => (
+          <TransactionItem key={idx} transactions={txGroup} />
         ))}
 
         {transactions.length === 0 && (

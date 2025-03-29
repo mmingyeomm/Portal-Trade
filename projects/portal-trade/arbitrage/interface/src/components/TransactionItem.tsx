@@ -1,23 +1,29 @@
 import React from "react";
-import { ArbitrageTransaction } from "../types";
+import { ArbitrageTransaction } from "@/types";
 import styles from "../app/page.module.css";
 
 interface TransactionItemProps {
-  transaction: ArbitrageTransaction;
+  transactions: ArbitrageTransaction[]; // length: 3
 }
 
-export default function ArbitrageCard({ transaction }: TransactionItemProps) {
-  // Determine color based on profit amount
-  const isProfitable = transaction.profit.amount > 0;
+export default function TransactionItem({
+  transactions,
+}: TransactionItemProps) {
+  if (transactions.length < 3) return null;
+
+  const [tx1, tx2, tx3] = transactions;
+
+  // 계산
+  const profitRaw = tx3.amount - tx1.amount;
+  const profit = parseFloat(profitRaw.toFixed(6));
+  const percentage = parseFloat(((profitRaw / tx1.amount) * 100).toFixed(2));
+  const isProfitable = profit > 0;
   const profitClass = isProfitable ? "positive" : "negative";
 
-  // Format profit amount with currency symbol
-  const formattedProfit = `${
-    isProfitable ? "+" : ""
-  }${transaction.profit.amount.toFixed(6)} ${transaction.profit.currency}`;
+  const tokenPair = `${tx1.tokenName} / ${tx2.tokenName}`;
+  const dexPair = `${tx1.dex} / ${tx2.dex}`;
 
-  // Format timestamp
-  const date = new Date(transaction.timestamp);
+  const date = new Date(tx3.timestamp);
   const formattedDate = date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -28,22 +34,25 @@ export default function ArbitrageCard({ transaction }: TransactionItemProps) {
     minute: "2-digit",
   });
 
-  // Get first letter of DEX name for icon
-  const dexInitial = transaction.dex.charAt(0).toUpperCase();
-
   return (
     <div className={styles.item}>
-      <div className={styles.dex} data-label="DEX">
-        <div className={styles.dexIcon}>{dexInitial}</div>
-        {transaction.dex}
+      <div className={`${styles.profit} ${profitClass}`} data-label="Profit">
+        {`${isProfitable ? "+" : ""}${profit} ${tx1.tokenName.split("/")[0]}`}
+      </div>
+
+      <div
+        className={`${styles.percentage} ${profitClass}`}
+        data-label="Percentage"
+      >
+        {`${isProfitable ? "+" : ""}${percentage}%`}
       </div>
 
       <div className={styles.coins} data-label="Pair">
-        <span className={styles.coinPair}>{transaction.coinPair}</span>
+        <span className={styles.coinPair}>{tokenPair}</span>
       </div>
 
-      <div className={`${styles.profit} ${profitClass}`} data-label="Profit">
-        {formattedProfit}
+      <div className={styles.dex} data-label="DEX">
+        {dexPair}
       </div>
 
       <div className={styles.timestamp} data-label="Time">

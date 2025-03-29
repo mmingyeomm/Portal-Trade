@@ -3,61 +3,69 @@ import { ArbitrageTransaction } from "../types";
 import styles from "../app/page.module.css";
 
 interface DashboardProps {
-  transactions: ArbitrageTransaction[];
+  transactions: ArbitrageTransaction[][]; // 배열의 배열
 }
 
 export default function Dashboard({ transactions }: DashboardProps) {
-  // Calculate statistics for each strategy
+  const getHourlyProfits = () => {
+    const now = new Date();
+    const hourlyData: { hour: string; profit: number }[] = [];
 
-  // Get daily profit data for the last 7 days
-  const getDailyProfits = () => {
-    const today = new Date();
-    const dailyData: { day: string; profit: number }[] = [];
-
-    // Create last 7 days
     for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
+      const hourDate = new Date(now);
+      hourDate.setHours(now.getHours() - i, 0, 0, 0);
 
-      const dayStr = date.toLocaleDateString("en-US", { weekday: "short" });
-      dailyData.push({ day: dayStr, profit: 0 });
+      const hourLabel = hourDate.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        hour12: true,
+      });
+
+      hourlyData.push({ hour: hourLabel, profit: 0 });
     }
 
-    // Fill in profits
-    transactions.forEach((tx) => {
-      const txDate = new Date(tx.timestamp);
-      const dayIndex =
-        6 -
-        Math.floor(
-          (today.getTime() - txDate.getTime()) / (1000 * 60 * 60 * 24)
+    transactions.forEach((group) => {
+      if (group.length === 3) {
+        const timestamp = new Date(group[2].timestamp);
+        const hoursAgo = Math.floor(
+          (now.getTime() - timestamp.getTime()) / (1000 * 60 * 60)
         );
 
-      if (dayIndex >= 0 && dayIndex < 7) {
-        dailyData[dayIndex].profit += tx.profit.amount;
+        if (hoursAgo >= 0 && hoursAgo < 7) {
+          const index = 6 - hoursAgo;
+          const profit = group[2].amount - group[0].amount;
+          hourlyData[index].profit += profit;
+        }
       }
     });
 
-    return dailyData;
+    return hourlyData;
   };
 
-  const dailyProfits = getDailyProfits();
+  const hourlyProfits = getHourlyProfits();
   const maxProfit = Math.max(
-    ...dailyProfits.map((d) => Math.abs(d.profit)),
+    ...hourlyProfits.map((d) => Math.abs(d.profit)),
     0.001
   );
 
-  // Get most profitable DEX
-  const dexProfits = transactions.reduce((acc, tx) => {
-    const { dex, profit } = tx;
-    acc[dex] = (acc[dex] || 0) + profit.amount;
+  const flatten = transactions.filter((group) => group.length === 3);
+  const topDexMap = flatten.reduce((acc, group) => {
+    const dex = group[2].dex;
+    const profit = group[2].amount - group[0].amount;
+    acc[dex] = (acc[dex] || 0) + profit;
     return acc;
   }, {} as Record<string, number>);
 
-  const topDex = Object.entries(dexProfits).sort((a, b) => b[1] - a[1])[0];
+  const topDex = Object.entries(topDexMap).sort((a, b) => b[1] - a[1])[0];
 
-  // Calculate the currency for display
-  const currency =
-    transactions.length > 0 ? transactions[0].profit.currency : "ETH";
+  const highestProfit = flatten.reduce((max, group) => {
+    const profit = group[2].amount - group[0].amount;
+    return profit > max ? profit : max;
+  }, 0);
+
+  const latestTimestamp = flatten.reduce((latest, group) => {
+    const ts = new Date(group[2].timestamp).getTime();
+    return ts > latest ? ts : latest;
+  }, 0);
 
   return (
     <div className={styles.dashboard}>
@@ -65,22 +73,48 @@ export default function Dashboard({ transactions }: DashboardProps) {
         <div className={styles.dashboardGrid}>
           {/* Chart section */}
           <div className={`${styles.dashboardCard} ${styles.chart}`}>
-            <h3>7-Day Profit Trend</h3>
-            <div className={styles.barChart}>
-              {dailyProfits.map((day, i) => (
-                <div key={i} className={styles.barContainer}>
+            <h3>Last 7 Hours Profit Trend</h3>
+            <div
+              className={styles.barChart}
+              style={{
+                overflowX: "auto",
+                display: "flex",
+                gap: "0.75rem",
+                alignItems: "flex-end",
+              }}
+            >
+              {hourlyProfits.map((hour, i) => (
+                <div
+                  key={i}
+                  className={styles.barContainer}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
                   <div
                     className={`${styles.bar} ${
-                      day.profit >= 0 ? styles.barPositive : styles.barNegative
+                      hour.profit >= 0 ? styles.barPositive : styles.barNegative
                     }`}
                     style={{
                       height: `${Math.min(
-                        (Math.abs(day.profit) / maxProfit) * 100,
+                        (Math.abs(hour.profit) / maxProfit) * 100,
                         100
                       )}%`,
+                      width: "12px",
                     }}
                   ></div>
-                  <div className={styles.barLabel}>{day.day}</div>
+                  <div
+                    className={styles.barLabel}
+                    style={{
+                      marginTop: "0.25rem",
+                      fontSize: "0.75rem",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {hour.hour}
+                  </div>
                 </div>
               ))}
             </div>
@@ -95,9 +129,7 @@ export default function Dashboard({ transactions }: DashboardProps) {
                   <span className={styles.statIcon}>⚡</span>
                 </div>
                 <div className={styles.statInfo}>
-                  <span className={styles.statValue}>
-                    {transactions.length}
-                  </span>
+                  <span className={styles.statValue}>{flatten.length}</span>
                   <span className={styles.statName}>Total Trades</span>
                 </div>
               </div>
@@ -120,14 +152,7 @@ export default function Dashboard({ transactions }: DashboardProps) {
                 </div>
                 <div className={styles.statInfo}>
                   <span className={styles.statValue}>
-                    {transactions
-                      .filter((tx) => tx.profit.amount > 0)
-                      .reduce(
-                        (max, tx) =>
-                          tx.profit.amount > max ? tx.profit.amount : max,
-                        0
-                      )
-                      .toFixed(6)}
+                    {highestProfit.toFixed(6)}
                   </span>
                   <span className={styles.statName}>Highest Profit</span>
                 </div>
@@ -139,16 +164,12 @@ export default function Dashboard({ transactions }: DashboardProps) {
                 </div>
                 <div className={styles.statInfo}>
                   <span className={styles.statValue}>
-                    {transactions.length > 0
-                      ? new Date(
-                          Math.max(
-                            ...transactions.map((tx) =>
-                              new Date(tx.timestamp).getTime()
-                            )
-                          )
-                        ).toLocaleDateString("en-US", {
+                    {latestTimestamp
+                      ? new Date(latestTimestamp).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })
                       : "N/A"}
                   </span>
