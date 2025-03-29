@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.whsk = exports.usdt = exports.ammB = exports.ammA = exports.AMM_ABI = exports.ERC20_ABI = void 0;
+exports.usdt = exports.whsk = exports.ammB = exports.ammA = exports.AMM_ABI = exports.ERC20_ABI = void 0;
 exports.ERC20_ABI = [
     {
         "inputs": [
@@ -595,7 +595,7 @@ exports.AMM_ABI = [
         "type": "function"
     }
 ];
-exports.ammA = '0xE6bD1F20389b8f9e3aa45F5bF5A3055eE3C90329';
-exports.ammB = '0xB8f1e8033628C1646BE2b2502e7D01f9115A0964';
-exports.usdt = '0x9019E896F66D5D1eF245e11D7Bc37b284337dB17';
-exports.whsk = '0x20d9c569B100352dcDcD501a4aa911511EBD0269';
+exports.ammA = '0x68516B8809D8621DDB7e1207C93a35fdA6A2ED0a';
+exports.ammB = '0x85faCE1EE985CFb45Cb28D682847c26d9beAB89a';
+exports.whsk = '0xb424976B6776e373f3F3163076B4351EC06453F5';
+exports.usdt = '0xC9Fa092cC3788E34f1a56031d536d25897F0F242';
