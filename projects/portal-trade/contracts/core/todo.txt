@@ -1,7 +1,0 @@
-ok what I am building is user can choose between normal supply and arbitrage supply they each mint tokenA and tokenB 
-
-what i am trying to do is when user has tokenB whenever yield is updated in tokenB the funds that is tied to tokenB should move to 
-
-Arbitrage wallet the amount that is moved is the amount of the yield 
-
-remember the token that is transfered to Arbitrage Wallet is not tokenB but it is token that is on pool the real token 
