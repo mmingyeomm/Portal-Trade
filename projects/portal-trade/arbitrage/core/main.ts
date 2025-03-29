@@ -1,8 +1,7 @@
 import { ethers } from 'ethers';
 import { ERC20_ABI, AMM_ABI, ammA, ammB, usdt, whsk } from './contractData.js';
 import dotenv from 'dotenv';
-import { BigNumber } from 'ethers';
-
+import { Contract } from 'ethers';
 
 dotenv.config();
 
@@ -84,13 +83,19 @@ async function detectArbitrageOpportunities() {
         
         // 아비트라지 가능성 확인 (가스 비용 고려)
         if (priceDiffBps.gt(MIN_PROFITABLE_DIFF_BPS)) {
-            //const expectedProfit = calculateExpectedProfit(TRADE_AMOUNT, );
+            //const expectedProfit = calculateExpectedProfit(TRADE_AMOUNT,usdtReserveA,otherReserveA,usdtReserveB,whskReserveB );
             //if(expectedProfit.gt(0)){
             if(true){
-                console.log('\n🚨 ARBITRAGE OPPORTUNITY DETECTED 🚨');
+                console.log('\n✅ ARBITRAGE OPPORTUNITY CHECK ✅ ');
 
                 // 아비트라지 방향 결정
                 const isAmmAHigher: boolean = priceUsdtInAmmA.gt(priceUsdtInAmmB);
+                const expectedProfit = calculateExpectedProfit(isAmmAHigher,ammAContract,ammBContract);
+                if (!expectedProfit){
+                    console.log("이익을 낼 수 없어 진행할 수 없습니다.")
+                    return 
+                }
+                console.log('\n🚨 ARBITRAGE OPPORTUNITY DETECTED 🚨');
                 if (isAmmAHigher) {
                     console.log(`Direction: Buy USDT from AMM B, sell to AMM A`);
                 } else {
@@ -283,26 +288,23 @@ async function executeArbitrage(
     }
 }
 
-// async function calculateExpectedProfit(
-//     tradeAmount: BigNumber,
-//     hskReserveFrom: BigNumber,
-//     usdtReserveFrom: BigNumber,
-//     hskReserveTo: BigNumber,
-//     usdtReserveTo: BigNumber
-//     ):Promise<BigNumber> {
-//     const amountInWithFee = tradeAmount.mul(997);
-//     const numeratorB = amountInWithFee.mul(usdtReserveFrom);
-//     const denominatorB = hskReserveFrom.mul(1000).add(amountInWithFee);
-//     const usdtOut = numeratorB.div(denominatorB); // 1단계: HSK → USDT (from pool)
-
-//     const amountInWithFee2 = usdtOut.mul(997);
-//     const numeratorA = amountInWithFee2.mul(hskReserveTo);
-//     const denominatorA = usdtReserveTo.mul(1000).add(amountInWithFee2);
-//     const hskOut = numeratorA.div(denominatorA); // 2단계: USDT → HSK (to pool)
-
-//     const profit = hskOut.sub(tradeAmount);
-//     return profit;
-//     }
+async function calculateExpectedProfit(isAmmAHigher:boolean,ammAContract:Contract, ammBContract:Contract): Promise<boolean> {
+        if (isAmmAHigher) {
+            // Step 1: AMM B - WHSK -> USDT
+            const usdtOut = await ammBContract.getAmountOut(whsk, TRADE_AMOUNT);
+  
+            // Step 2: AMM A - USDT -> WHSK
+            const hskOut = await ammAContract.getAmountOut(usdt, usdtOut);
+            return hskOut.sub(TRADE_AMOUNT).gt(0);
+        } else {
+            // Step 1: AMM A - WHSK -> USDT
+            const usdtOut = await ammAContract.getAmountOut(whsk, TRADE_AMOUNT);
+  
+            // Step 2: AMM B - USDT -> WHSK
+            const hskOut = await ammBContract.getAmountOut(usdt, usdtOut);
+            return hskOut.sub(TRADE_AMOUNT).gt(0);
+        }
+    }
 
 async function startArbitrageMonitoring(intervalMs = 10000) {
     // 초기 검사
