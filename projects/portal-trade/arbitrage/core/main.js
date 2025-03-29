@@ -25,7 +25,7 @@ const wallet = new ethers_1.ethers.Wallet(PRIVATE_KEY, provider);
 // 최소 수익성 있는 가격 차이 (basis points, 1bp = 0.01%)
 const MIN_PROFITABLE_DIFF_BPS = 50; // 0.5%
 // 가스 비용 및 슬리피지를 고려한 최소 거래 금액
-const MIN_TRADE_AMOUNT = ethers_1.ethers.utils.parseUnits('10', 18); // 예: 10 USDT
+const MIN_TRADE_AMOUNT = ethers_1.ethers.utils.parseUnits('1000000', 0); // amm pool 0.5% 최소거래금액. (10000000hsk있다면 50000hsk가 최소거래금액)
 // 아비트라지 실행 중인지 확인하는 플래그
 let isExecutingArbitrage = false;
 function detectArbitrageOpportunities() {
@@ -118,13 +118,8 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
             const whskWithSigner = whskContract.connect(wallet);
             // 현재 잔액 확인
             const initialUsdtBalance = yield usdtContract.balanceOf(wallet.address);
+            console.log(initialUsdtBalance.toString());
             const initialWhskBalance = yield whskContract.balanceOf(wallet.address);
-            console.log(initialUsdtBalance.toString(), "\~");
-            //디버깅
-            //이거 !!!! usdtContract.balanceOf(wallet.address).toString()
-            const raw = yield usdtContract.balanceOf(wallet.address);
-            console.log("📦 raw value (BigNumber):", raw.toString());
-            console.log(`Current balances - USDT: ${initialUsdtBalance.toString()}, WHSK: ${initialWhskBalance.toString()}`);
             // 거래 금액 결정 (실제 구현에서는 최적의 금액을 계산해야 함)
             // 여기서는 간단히 MIN_TRADE_AMOUNT 또는 보유 잔액 중 작은 값을 사용
             let tradeAmount;
@@ -133,9 +128,11 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 // AMM B에서 USDT 구매 후 AMM A에 판매
                 // WHSK로 시작하는 것이 좋음
                 //min_trade_amount
-                tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? initialWhskBalance : ethers_1.ethers.constants.Zero;
+                tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? ethers_1.ethers.utils.parseUnits("1000000", 0) : ethers_1.ethers.constants.Zero;
                 tokenToUse = contractData_js_1.whsk;
                 if (tradeAmount.isZero()) {
+                    console.log('my whsk : ', initialWhskBalance.toString());
+                    console.log("min_trade_amount", MIN_TRADE_AMOUNT.toString());
                     console.log('WHSK 잔액이 최소 거래 금액보다 부족합니다.');
                     isExecutingArbitrage = false;
                     return;
@@ -164,13 +161,19 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 const swapTx2 = yield ammAWithSigner.swap(contractData_js_1.usdt, usdtReceived);
                 yield swapTx2.wait();
                 console.log(`Swap transaction: ${swapTx2.hash}`);
+                // 6. 늘어난 WHSK 확인
+                const finalWhskBalance = yield whskContract.balanceOf(wallet.address);
+                const newWhskReceived = finalWhskBalance.sub(initialWhskBalance);
+                console.log(`Received ${newWhskReceived.toString()} WHSK`);
             }
             else {
                 // AMM A에서 USDT 구매 후 AMM B에 판매
                 // WHSK로 시작하는 것이 좋음
-                tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? initialWhskBalance : ethers_1.ethers.constants.Zero;
+                tradeAmount = initialWhskBalance.gt(MIN_TRADE_AMOUNT) ? ethers_1.ethers.utils.parseUnits("1000000", 0) : ethers_1.ethers.constants.Zero;
                 tokenToUse = contractData_js_1.whsk;
                 if (tradeAmount.isZero()) {
+                    console.log('my whsk : ', initialWhskBalance.toString());
+                    console.log("min_trade_amount", MIN_TRADE_AMOUNT.toString());
                     console.log('WHSK 잔액이 최소 거래 금액보다 부족합니다.');
                     isExecutingArbitrage = false;
                     return;
@@ -199,15 +202,19 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
                 const swapTx2 = yield ammBWithSigner.swap(contractData_js_1.usdt, usdtReceived);
                 yield swapTx2.wait();
                 console.log(`Swap transaction: ${swapTx2.hash}`);
+                // 6. 늘어난 WHSK 확인
+                const finalWhskBalance = yield whskContract.balanceOf(wallet.address);
+                const newWhskReceived = finalWhskBalance.sub(initialWhskBalance);
+                console.log(`Received ${newWhskReceived.toString()} WHSK`);
             }
             // 최종 잔액 확인 및 수익 계산
-            const finalUsdtBalance = yield usdtContract.balanceOf(wallet.address).toString();
-            const finalWhskBalance = yield whskContract.balanceOf(wallet.address).toString();
+            const finalUsdtBalance = yield usdtContract.balanceOf(wallet.address);
+            const finalWhskBalance = yield whskContract.balanceOf(wallet.address);
             console.log('\n--- ARBITRAGE COMPLETED ---');
-            console.log(`Initial balances - USDT: ${initialUsdtBalance.toString()}, WHSK: ${initialUsdtBalance.toString()}`);
+            console.log(`Initial balances - USDT: ${initialUsdtBalance.toString()}, WHSK: ${initialWhskBalance.toString()}`);
             console.log(`Final balances - USDT: ${finalUsdtBalance.toString()}, WHSK: ${finalWhskBalance.toString()}`);
             const whskProfit = finalWhskBalance.sub(initialWhskBalance);
-            console.log(`Profit: ${whskProfit.toStirng()} WHSK`);
+            console.log(`Profit: ${whskProfit.toString()} WHSK`);
         }
         catch (error) {
             console.error('Arbitrage execution error:', error);
