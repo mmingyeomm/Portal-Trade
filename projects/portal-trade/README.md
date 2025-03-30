@@ -2,7 +2,7 @@
 
 ## Overview
 Portal Trade is a decentralized lending and arbitrage trading protocol built on blockchain technology. The platform enables users to deposit assets, borrow funds, and generate profits through arbitrage trading opportunities across decentralized exchanges. By leveraging smart contract architecture, Portal Trade provides a secure and efficient system for maximizing returns through automated arbitrage strategies.
-
+User can generate more yield by giving access to their yield amount to Arbitrage Bot ran by our protocol
 ## Tech Stack
 - Client: React, Next.js, TypeScript, TailwindCSS
 - Contracts: Solidity Smart Contracts, Hardhat
