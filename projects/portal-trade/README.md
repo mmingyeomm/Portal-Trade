@@ -23,7 +23,7 @@ The project consists of several key components:
 
 ## Demo
 - Demo Video: [[YouTube link]](https://www.youtube.com/watch?v=ooxifScF9Zc)
-- Project Deck: [[Google Slides link]](https://drive.google.com/file/d/1igcPUUDUXbiZHws3NbrTPpWyU7SIxC_1/view?usp=sharing)
+- Project Deck: [[[Google Slides link]](https://drive.google.com/file/d/1igcPUUDUXbiZHws3NbrTPpWyU7SIxC_1/view?usp=sharing)](https://drive.google.com/file/d/18w8jKeECfDemoDbQKWJIUdxbErSwa8JC/view?usp=sharing)
 
 ## Team
 - MinGyeom Kim - Smart Contract Developer & PM
