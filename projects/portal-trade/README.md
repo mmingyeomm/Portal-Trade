@@ -8,6 +8,7 @@ User can generate more yield by giving access to their yield amount to Arbitrage
 - Client: React, Next.js, TypeScript, TailwindCSS
 - Contracts: Solidity Smart Contracts, Hardhat
 - Arbitrage Bot: Typescript, node
+- Arbitrage Scanner: Next.js, TypeScript, TailwindCSS
 - Dex 1, 2: Next.js, TypeScript, TailwindCSS
 - Blockchain: Ethereum, ERC20 Tokens
 - Libraries: Ethers.js, Wagmi, OpenZeppelin
