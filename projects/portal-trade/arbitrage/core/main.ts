@@ -14,7 +14,7 @@ const provider = new ethers.providers.JsonRpcProvider('https://hashkeychain-test
 const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 
 // 최소 수익성 있는 가격 차이 (basis points, 1bp = 0.01%)
-const MIN_PROFITABLE_DIFF_BPS = 50; // 0.5%
+const MIN_PROFITABLE_DIFF_BPS = 30; // 0.5%
 
 // 가스 비용 및 슬리피지를 고려한 최소 거래 금액
 
