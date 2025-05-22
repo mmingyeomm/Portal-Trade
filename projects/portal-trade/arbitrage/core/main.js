@@ -23,7 +23,7 @@ if (!PRIVATE_KEY) {
 const provider = new ethers_1.ethers.providers.JsonRpcProvider('https://hashkeychain-testnet.alt.technology');
 const wallet = new ethers_1.ethers.Wallet(PRIVATE_KEY, provider);
 // 최소 수익성 있는 가격 차이 (basis points, 1bp = 0.01%)
-const MIN_PROFITABLE_DIFF_BPS = 30; // 0.5%
+const MIN_PROFITABLE_DIFF_BPS = 50; // 0.5%
 // 가스 비용 및 슬리피지를 고려한 최소 거래 금액
 const MIN_TRADE_AMOUNT = ethers_1.ethers.utils.parseUnits('997', 0); // amm pool 0.5% 최소거래금액. (10000000hsk있다면 50000hsk가 최소거래금액)
 const TRADE_AMOUNT = ethers_1.ethers.utils.parseUnits('1000', 0);
@@ -75,18 +75,12 @@ function detectArbitrageOpportunities() {
             console.log(`Price difference: ${priceDiffPercent.toFixed(2)}%`);
             // 아비트라지 가능성 확인 (가스 비용 고려)
             if (priceDiffBps.gt(MIN_PROFITABLE_DIFF_BPS)) {
-                //const expectedProfit = calculateExpectedProfit(TRADE_AMOUNT,usdtReserveA,otherReserveA,usdtReserveB,whskReserveB );
+                //const expectedProfit = calculateExpectedProfit(TRADE_AMOUNT, );
                 //if(expectedProfit.gt(0)){
                 if (true) {
-                    console.log('\n✅ ARBITRAGE OPPORTUNITY CHECK ✅ ');
+                    console.log('\n🚨 ARBITRAGE OPPORTUNITY DETECTED 🚨');
                     // 아비트라지 방향 결정
                     const isAmmAHigher = priceUsdtInAmmA.gt(priceUsdtInAmmB);
-                    const expectedProfit = calculateExpectedProfit(isAmmAHigher, ammAContract, ammBContract);
-                    if (!expectedProfit) {
-                        console.log("이익을 낼 수 없어 진행할 수 없습니다.");
-                        return;
-                    }
-                    console.log('\n🚨 ARBITRAGE OPPORTUNITY DETECTED 🚨');
                     if (isAmmAHigher) {
                         console.log(`Direction: Buy USDT from AMM B, sell to AMM A`);
                     }
@@ -238,24 +232,24 @@ function executeArbitrage(isAmmAHigher, ammAContract, ammBContract, usdtContract
         }
     });
 }
-function calculateExpectedProfit(isAmmAHigher, ammAContract, ammBContract) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (isAmmAHigher) {
-            // Step 1: AMM B - WHSK -> USDT
-            const usdtOut = yield ammBContract.getAmountOut(contractData_js_1.whsk, TRADE_AMOUNT);
-            // Step 2: AMM A - USDT -> WHSK
-            const hskOut = yield ammAContract.getAmountOut(contractData_js_1.usdt, usdtOut);
-            return hskOut.sub(TRADE_AMOUNT).gt(0);
-        }
-        else {
-            // Step 1: AMM A - WHSK -> USDT
-            const usdtOut = yield ammAContract.getAmountOut(contractData_js_1.whsk, TRADE_AMOUNT);
-            // Step 2: AMM B - USDT -> WHSK
-            const hskOut = yield ammBContract.getAmountOut(contractData_js_1.usdt, usdtOut);
-            return hskOut.sub(TRADE_AMOUNT).gt(0);
-        }
-    });
-}
+// async function calculateExpectedProfit(
+//     tradeAmount: BigNumber,
+//     hskReserveFrom: BigNumber,
+//     usdtReserveFrom: BigNumber,
+//     hskReserveTo: BigNumber,
+//     usdtReserveTo: BigNumber
+//     ):Promise<BigNumber> {
+//     const amountInWithFee = tradeAmount.mul(997);
+//     const numeratorB = amountInWithFee.mul(usdtReserveFrom);
+//     const denominatorB = hskReserveFrom.mul(1000).add(amountInWithFee);
+//     const usdtOut = numeratorB.div(denominatorB); // 1단계: HSK → USDT (from pool)
+//     const amountInWithFee2 = usdtOut.mul(997);
+//     const numeratorA = amountInWithFee2.mul(hskReserveTo);
+//     const denominatorA = usdtReserveTo.mul(1000).add(amountInWithFee2);
+//     const hskOut = numeratorA.div(denominatorA); // 2단계: USDT → HSK (to pool)
+//     const profit = hskOut.sub(tradeAmount);
+//     return profit;
+//     }
 function startArbitrageMonitoring() {
     return __awaiter(this, arguments, void 0, function* (intervalMs = 10000) {
         // 초기 검사
