@@ -1,90 +1,103 @@
-# HackerHouse Projects Showcase
+# Portal Trade 🚀
 
-Welcome to the HackerHouse Projects Showcase! This repository features all the amazing projects built during Hackathon.
+**Leveraging Lending Protocol Yields for Arbitrage**
 
-## How to Submit Your Project
+Portal Trade is an innovative dual-token lending system with a built-in arbitrage mechanism that automatically optimizes yields for users while maintaining the simplicity of traditional lending protocols.
 
-1. Fork this repository
-2. Create your project folder under `projects` (e.g., `/projects/your-project-name`)
-3. Add your project documentation (using the template below)
-4. Submit a Pull Request
-5. Wait for on-site review
+![Portal Trade Overview](https://via.placeholder.com/800x400/2E86AB/FFFFFF?text=Portal+Trade+Protocol+Overview)
 
-**Important**: All projects must be developed on-site during the Hackathon. Previously developed projects are not eligible for submission.
+## 🎯 What is Portal Trade?
 
-## Project Documentation Template
+Portal Trade is a next-generation lending protocol that combines traditional lending with automated arbitrage strategies. Unlike conventional lending protocols, Portal Trade uses a sophisticated dual-token system to maximize returns for users through automated yield optimization.
 
-Create a `README.md` in your project folder using this template:
+### Key Features
 
-```markdown
-# Project Name
+- **🤖 Automated Arbitrage**: Built-in arbitrage bot executes trading strategies automatically
+- **💰 Dual Token System**: aTokens for standard deposits, bTokens for arbitrage deposits
+- **⚡ Real-time Optimization**: Yields are used instantaneously for maximum efficiency
+- **🔒 Secure & Transparent**: Blockchain-based smart contract automation
+- **🌐 24/7 Accessibility**: Available from anywhere, anytime
 
-## Overview
-[Describe your project in 2-3 sentences - what it does and what problem it solves]
+## 🔧 How It Works
 
-## Tech Stack
-- Frontend: [List frontend technologies]
-- Backend: [List backend technologies]
-- Other: [Any other relevant technologies]
+### The Dual Token System
 
-## Demo
-- Demo Video: [YouTube link]
-- Project Deck: [Google Slides link]
+#### aToken (Standard Deposit Token)
+- Represents regular user deposits
+- Earns 5.00% annual yield
+- Can be used as collateral for borrowing
+- Similar to AAVE's standard deposit tokens
 
-## Team
-- Member A - Role
-- Member B - Role
-- Member C - Role
-```
+#### bToken (Arbitrage Token)
+- Represents arbitrage deposits
+- Receives share of profits from arbitrage bot
+- Earns 5.00% APY + α (additional arbitrage profits)
+- Tokens are locked for a fixed period
+- Restricted to designated arbitrage wallet
 
-## Example
+![Dual Token System](https://via.placeholder.com/600x400/FF6B6B/FFFFFF?text=Dual+Token+Architecture)
 
-```markdown
-# AI Writing Assistant
+### Arbitrage Mechanism
 
-## Overview
-An intelligent writing assistant powered by GPT-4, helping users generate high-quality content quickly. Supports multiple writing styles and adapts content based on user feedback.
+Step 1: Pool Contract distinguishes Arbitrage Deposits
+↓
+Step 2: Funds automatically moved to Arbitrage Wallet
+↓
+Step 3: Arbitrage Wallet executes trades for maximum profit
+↓
+Result: Profits redistributed to bToken holders
 
-## Tech Stack
-- Frontend: React, TailwindCSS
-- Backend: Node.js, Express
-- AI: OpenAI API, Langchain
-- Deployment: Docker, AWS
+#### Detailed Process Flow
 
-## Demo
-- Demo Video: https://youtube.com/watch?v=...
-- Project Deck: https://docs.google.com/presentation/d/...
+1. **🔍 Deposit Recognition**
+   - Pool Contract automatically identifies arbitrage deposits
+   - Separates bToken deposits from standard aToken deposits
 
-## Team
-- John Doe - Full Stack Developer
-- Jane Smith - AI Engineer
-- Mike Johnson - Product Designer
-```
+2. **💸 Fund Transfer**
+   - Funds are automatically moved to designated Arbitrage Wallet
+   - Process occurs at regular intervals for optimal efficiency
 
-## Submission Requirements
+3. **🤖 Arbitrage Execution**
+   - Arbitrage Wallet executes automated trading strategies
+   - Maximizes profit through yield differential exploitation
 
-- The submission deadline is 10:00 on the 22th, with the following submission requirements:
-    - Project Code
-        - Submit code for review and testing. You need to include at least one open source license from the following:
-        - MIT - https://opensource.org/licenses/MIT
-        - Apache 2.0 - https://opensource.org/licenses/Apache-2.0
-        - 3-Clause BSD - https://opensource.org/licenses/BSD-3-Clause
-        Detailed submission rules will be announced later.
-        We suggest developers focus on creativity and MVP implementation during the Hackerhouse. Time is precious, and you can consider project and code completeness and detailed architecture design later.
-    - Deck
-        - Brief project description, team introduction, etc.
-    - Live Demo & Video (Optional)
+4. **📈 Profit Distribution**
+   - Generated profits are redistributed to bToken holders
+   - Additional returns on top of base 5.00% APY
 
-## Documentation Resources
 
-For more information and guidance, please refer to:
-- [Official Documentation](https://docs.hsk.xyz/)
-- [Technical Documentation](https://documentation-1oqt.vercel.app/)
+![Arbitrage Flow](https://via.placeholder.com/700x300/4ECDC4/FFFFFF?text=Arbitrage+Mechanism+Flow)
 
-## Notes
-- Ensure your documentation follows the template format
-- All links should be accessible
-- Team member information should be complete and accurate
-- Projects must be placed in the `/projects` directory (e.g., `/projects/example-project-1`)
+## 🆚 Portal Trade vs AAVE
 
-Good luck with your Demo Day! 🚀
+| Feature | Portal Trade | AAVE |
+|---------|-------------|------|
+| **Architecture** | Dual-token with built-in arbitrage | Traditional lending only |
+| **Yield Optimization** | Automated arbitrage bot | Manual yield management |
+| **Yield Usage** | Instantaneous utilization | Requires withdrawal |
+| **User Complexity** | Simplified automated experience | Manual DeFi operations |
+| **Return Potential** | 5% + arbitrage profits | Standard lending rates |
+
+## 🚀 Key Advantages
+
+### For Users
+- ✅ Competitive yield from aTokens
+- ✅ Simplified lending experience  
+- ✅ Secure, audited protocol
+- ✅ Multi-asset support
+- ✅ Automated yield optimization
+
+### For the Protocol
+- ✅ Sustainable arbitrage revenue
+- ✅ Capital-efficient design
+- ✅ Scalable architecture
+- ✅ Foundation for future DeFi innovations
+
+## 🛠 Technical Features
+
+### Core Protocol Features
+- **Designated Arbitrage Wallet**: Specialized wallet with exclusive arbitrage access
+- **Multi-Asset Support**: Individual LTV and liquidation thresholds per asset
+- **Programmable Yield Rates**: Customizable rates for optimal arbitrage scenarios
+- **Seamless UX**: Identical experience for standard and arbitrage deposits
+
