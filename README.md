@@ -4,8 +4,6 @@
 
 Portal Trade is an innovative dual-token lending system with a built-in arbitrage mechanism that automatically optimizes yields for users while maintaining the simplicity of traditional lending protocols.
 
-![Portal Trade Overview](https://via.placeholder.com/800x400/2E86AB/FFFFFF?text=Portal+Trade+Protocol+Overview)
-
 ## 🎯 What is Portal Trade?
 
 Portal Trade is a next-generation lending protocol that combines traditional lending with automated arbitrage strategies. Unlike conventional lending protocols, Portal Trade uses a sophisticated dual-token system to maximize returns for users through automated yield optimization.
@@ -35,7 +33,14 @@ Portal Trade is a next-generation lending protocol that combines traditional len
 - Tokens are locked for a fixed period
 - Restricted to designated arbitrage wallet
 
-![Dual Token System](https://via.placeholder.com/600x400/FF6B6B/FFFFFF?text=Dual+Token+Architecture)
+<img width="1089" alt="Image" src="https://github.com/user-attachments/assets/a0070733-e23b-4f98-bebd-9dc03c757357" />
+
+
+#### Detailed Flow
+
+
+<img width="1154" alt="image" src="https://github.com/user-attachments/assets/1a287dd6-de2d-4740-bbf8-c0cbc9c9f237" />
+
 
 ### Arbitrage Mechanism
 
@@ -66,7 +71,6 @@ Result: Profits redistributed to bToken holders
    - Additional returns on top of base 5.00% APY
 
 
-![Arbitrage Flow](https://via.placeholder.com/700x300/4ECDC4/FFFFFF?text=Arbitrage+Mechanism+Flow)
 
 ## 🆚 Portal Trade vs AAVE
 
